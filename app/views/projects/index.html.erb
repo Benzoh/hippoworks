@@ -1,0 +1,128 @@
+<% provide(:title, 'Projects') %>
+
+<main class="container-fluid" style="padding-top: 16px;">
+
+  <% if notice %>
+    <p id="notice" class="text-center alert alert-success"><%= notice %></p>
+  <% end %>
+
+  <div class="row">
+
+    <div class="col-2">
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">プロジェクト（TODO）</div>
+        <div class="card-body">
+          <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action active"> - カテゴリ</a>
+            <a href="#" class="list-group-item list-group-item-action"> - カテゴリ</a>
+            <a href="#" class="list-group-item list-group-item-action"> - カテゴリ</a>
+            <a href="#" class="list-group-item list-group-item-action"> - カテゴリ</a>
+            <a href="#" class="list-group-item list-group-item-action"> - カテゴリ</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-10">
+      <%= link_to 'TODOを作成する', new_group_project_path, { class: "btn btn-primary", style: "margin-top:2px;" } %>
+      <hr>
+      <%# TODO:絞り込み機能 %>
+      <%= form_tag(group_projects_path, { method: "get", remote: true, name: "projectFilter" } ) do %>
+        <div class="d-flex">
+          <div>
+            <span>担当者</span>
+            <%# TODO: ユーザー名表示 %>
+            <%= select_tag "account", options_from_collection_for_select(
+            @group.group_accounts,
+              :id,
+              :user_name,
+              params[:account]),
+              { id: 'filter_group', class: 'custom-select js_project-filter', :include_blank => 'すべて' }
+            %>
+          </div>
+          <div class="ml-3">
+            <span>ステータス</span>
+            <%= select_tag "status", options_from_collection_for_select(
+              Status.all,
+              "id",
+              "name",
+              params[:status]),
+              { id: 'filter_status', class: 'custom-select js_project-filter', :include_blank => 'すべて' }
+            %>
+          </div>
+          <div class="ml-3">
+            <span>優先度</span>
+            <%= select_tag "priority", options_for_select([
+                ["S", "S"], ["A", "A"], ["B", "B"], ["C", "C"], ["D", "D"],
+              ],
+              params[:priority]),
+              { id: 'priority', class: 'custom-select js_project-filter', :include_blank => 'すべて' }
+            %>
+          </div>
+          <div class="ml-auto">
+            <%# TODO: ソートパラメータの追加 %>
+            <span>ソート</span>
+            <%= select_tag "sort", options_for_select([
+              ["納期：昇順", :asc],
+              ["納期：降順", :desc],
+            ],
+            params[:sort]),
+            { id: 'sort_id', class: 'custom-select js_project-filter' } %>
+          </div>
+        </div>
+        <%= hidden_field_tag "filter", true %>
+      <% end %>
+
+      <%# TODO: 一括編集 %>
+      <div class="mt-3">
+        <button class="btn btn-light">✓</button>
+        <button class="btn btn-light">ステータスを変更する</button>
+        <button class="btn btn-light">移動する</button>
+        <button class="btn btn-light ml-3">簡易登録</button>
+      </div>
+
+      <div class="list-group mt-3">
+        <% @projects.each do |project| %>
+          <div class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+              <div class="form-group form-check mr-3">
+                <!-- TODO: 一括編集 -->
+                <%= check_box 'project_check', 'edit_flag', {class: "form-check-input"}, true, false %>
+              </div>
+              <div class="open-icon btn btn-sm border" data-toggle="collapse" href="#collapse_<%= project.id %>" role="button" aria-expanded="false" aria-controls="collapse_<%= project.id %>">
+                <!-- TODO: アイコン入れる｜詳細を展開 -->
+                ↓
+              </div>
+              <div class="ml-3 mr-auto">
+                <a href="<%= url_for(group_dashboard_path(group_id: project.group_id, id: project.id)) %>" style="line-height: 1.8;">
+                  <span>【<%= Status.find_by(id: project.status_id).name %>】</span>
+                  <span class="font-weight-bold">Pman: <%= project.number %></span>
+                  <span class="font-weight-bold ml-2"><%= project.name %></span>
+                  <span class="ml-2 badge badge-info"><%= project.delivery_date %></span>
+                </a>
+              </div>
+            </div>
+            <div class="collapse mt-3" id="collapse_<%= project.id %>">
+              <div class="card card-body mb-2">
+                <div class="pt-1"><small>
+                  ステータス: <%= Status.find_by(id: project.status_id).name %> / 
+                  担当者: <%= project.accounts.count %> 名 / 
+                  期日: <%= project.delivery_date.strftime('%Y年%m月%d日') %> / 
+                  優先度: <%= project.priority %>
+                </small></div>
+                <div class="pt-3 pb-2"><%= simple_format(project.description) %></div>
+                <div class="pt-2 border-top"><a href="">♥ <small>いいね！</small></a></div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="c_pagination p-5">
+        <%= paginate @projects %>
+      </div>
+    </div>
+
+  </div>
+
+</main>

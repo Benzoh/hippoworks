@@ -1,0 +1,61 @@
+<%#= TODO: ajaxでの取得に変える？？ %>
+<div class="js_update-info"><%#= jsで差し込み %></div>
+
+<div class="card mb-3">
+  <div class="card-header text-white bg-dark">コメント</div>
+  <div class="card-body">
+    <%= form_with model: Comment.new, class: 'js_memos-form', multipart: true do |f| %>
+      <div class="field mb-2">
+        <%= f.text_area :body, {class: 'form-control', id: 'js_comment-textarea', placeholder: "Waiting comment..", style: 'height: 150px;'} %>
+        <div class="form-group mt-2">
+          <label for="file">添付ファイル</label>
+          <%#= TODO: 複数投稿にする %>
+          <%#= TODO: 5つまでにする %>
+          <%= f.file_field :uploads, { multiple: true, class: 'form-control-file' } %>
+        </div>
+      </div>
+      <%= f.hidden_field :parent_id, { value: parent.id } %>
+      <%= f.hidden_field :parent_type, { value: parent.class.to_s.downcase } %>
+      <%= f.submit 'コメントする', {id: 'js_comment-submit', class: "btn btn-info my-2"} %>
+    <% end %>
+    <div id="js_memo" class="mt-3 list-group">
+      <% comments.each do |comment| %>
+        <div id="comment-<%= comment.id %>" class="list-group-item <%= 'unread' if notification_ids.include?(comment.id) %>">
+          <div class="py-2 d-flex w-100 justify-content-between">
+            <div>
+              <img src="/user_images/<%= User.find_by(id: comment.user_id).image_name %>" width="30">
+              <%= render :partial => 'shared/favorite', locals: { record_type: 'comment', record_id: comment.id } %>
+              <%= comment.comment_index_id %>: <%= User.find_by(id: comment.user_id).name %> <%= comment.created_at.strftime("%Y/%m/%d (#{@wd[comment.created_at.wday]}) %H:%M") %>
+            </div>
+            <small><a href="<%= comment_path(comment) %>" class="float-right" data-method="delete" data-confirm="本当に削除しますか？">削除</a></small>
+          </div>
+          <div class="py-2"> <%= simple_format comment.body %> </div>
+          <div class="mb-2">
+            <% if comment.uploads.attached? %>
+              <% comment.uploads.each do |file| %>
+                <% if file.previewable? %>
+                  <%= link_to(image_tag(file.preview(resize: "200x200>")), url_for(file)) %>
+                <% elsif file.variable? %>
+                  <%= link_to(image_tag(file.variant(resize: "200x200")), url_for(file)) %>
+                <% else %>
+                  <%= link_to file.filename, rails_blob_path(file, disposition: "attachment") %>
+                <% end %>
+              <% end %>
+            <% end %>
+          </div>
+          <hr>
+          <div class="d-flex">
+            <div class="mr-3"><a href="#"><small><i class="fas fa-reply"></i> 返信する[未実装]</small></a></div>
+            <%= render :partial => 'shared/like', locals: { thread_type: 'comment', thread_id: comment.id } %>
+            <div class="ml-auto"><a href="#"><small>会話を閉じる[未実装]</small></a></div>
+            <div class="fixed-link-btn js_fixed-link-<%= comment.id %> ml-3">
+              <%= link_to get_fixed_link_path(comment_id: comment.id, record_type: comment.parent_type), remote: true do %>
+                <small>固定リンク</small></a>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+<%= form_for(@board, :url => {:action => 'create'}) do |form| %>
+  <% if board.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(board.errors.count, "error") %> prohibited this board from being saved:</h2>
+
+      <ul>
+      <% board.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field mb-3">
+    <%= form.label :name, "タイトル" %>
+    <%= form.text_field :name, {class: 'form-control', placeholder: "name"} %>
+  </div>
+
+  <div class="field mb-3">
+    <%= form.label :description, "本文" %>
+    <%= form.text_area :description, { class: 'form-control mb-2' } %>
+  </div>
+
+  <div class="field mb-3">
+    <%# TODO: カテゴリー設定 %>
+    <%#= form.collection_select :category_id, $categories, :name, :id %>
+  </div>
+
+  <div>
+    <a href="#">TODO: 添付ファイルを追加する</a>
+  </div>
+  <div>
+    <a href="#">TODO: アンケートを作成する</a>
+  </div>
+
+  <%= form.hidden_field :group_id %>
+
+  <div class="actions mt-3">
+    <%= form.submit '保存する', {class: "btn btn-info"} %>
+  </div>
+<% end %>

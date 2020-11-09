@@ -1,0 +1,26 @@
+var html = `
+  <% if notifications.present? %>
+    <%#= TODO: リファクタリング：const_getいらない %>
+    <% notifications.each do | key, values | %>
+      <a href="<%= get_notification_item_url(values.first) %>" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-100 justify-content-between">
+          <% if values.first.thread_type == 'comment' %>
+            <% comment = Comment.find_by(id: values.first.thread_id) %>
+            <h5 class="mb-1"><%= Object.const_get(comment.parent_type.classify).find_by(id: comment.parent_id).name.truncate(10) %></h5>
+          <% else %>
+            <h5 class="mb-1"><%= Object.const_get(values.first.thread_type.classify).find_by(id: values.first.thread_id).name.truncate(10) %></h5>
+          <% end %>
+        </div>
+        <% if values.first.thread_type == 'comment' %>
+          <p class="mb-1"><%= Object.const_get(values.first.thread_type.classify).find_by(id: values.first.thread_id).body.truncate(45) %></p>
+        <% else %>
+          <p class="mb-1"><%= Object.const_get(values.first.thread_type.classify).find_by(id: values.first.thread_id).description.truncate(45) %></p>
+        <% end %>
+      </a>
+    <% end %>
+  <% else %>
+    <div class="py-2">更新はありません。</div>
+  <% end %>
+`;
+
+$('.js_notification-fetch').html(html);

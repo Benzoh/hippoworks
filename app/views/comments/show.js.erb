@@ -1,0 +1,52 @@
+<%
+date = @comment.created_at.strftime("%Y/%m/%d")
+time = @comment.created_at.strftime("%H:%M")
+week = @comment.created_at.strftime("(#{@wd[@comment.created_at.wday]})")
+attachments = []
+
+# TODO: リファクタリング。制限もうける？
+if @comment.uploads.attached?
+  @comment.uploads.each do |file|
+    if file.previewable?
+      attachments.push(link_to(image_tag(file.preview(resize: "200x200>")), url_for(file)))
+    elsif file.variable?
+      attachments.push(link_to(image_tag(file.variant(resize: "200x200")), url_for(file)))
+    else
+      attachments.push(link_to file.filename, rails_blob_path(file, disposition: "attachment"))
+    end
+  end
+end
+
+html = <<~EOS
+  <div id="comment-#{@comment.id}" class="list-group-item">
+    <div class="py-2 d-flex w-100 justify-content-between">
+      <div>
+        <img src="/user_images/#{User.find_by(id: @comment.user_id).image_name}" width="30">
+        <span class="js_render-favorite">
+          <a href="#{url_for('/favorites/comment/' + @comment.id.to_s + '/create')}" data-method="post" data-remote="true"><i class="far fa-star"></i></a>
+        </span>
+        #{@comment.comment_index_id}: #{User.find_by(id: @comment.user_id).name} #{date} #{week} #{time}
+      </div>
+      <small><a href="#{comment_path(@comment)}" class="float-right" data-method="delete" data-confirm="本当に削除しますか？">削除</a></small>
+    </div>
+    <div class="py-2">#{simple_format @comment.body}</div>
+    <div class="mb-2">
+      #{ attachments[0] }
+      #{ attachments[1] }
+      #{ attachments[2] }
+      #{ attachments[3] }
+      #{ attachments[4] }
+    </div>
+    <hr>
+    <div id="like-comment-#{@comment.id}">
+      <div>
+        <a href="#{url_for('/likes/comment/' + @comment.id.to_s + '/create')}" data-method="post" data-remote="true">♥ <small>いいね！</small></a>
+      </div>
+    </div>
+  </div>
+EOS
+%>
+
+$('#js_comment-textarea').val("");
+$('#uploads').val("");
+$('#js_memo').prepend('<%= j(html.html_safe) %>');

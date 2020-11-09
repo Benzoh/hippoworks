@@ -1,0 +1,33 @@
+<% provide(:title, '招待中のメンバーリスト') %>
+
+<p id="notice"><%= notice %></p>
+
+<main class="container" style="padding-top: 57px">
+
+  <h2>招待中のメンバーリスト</h2>
+
+  <table class="mt-5 table">
+    <thead>
+      <tr>
+        <th>招待中のアドレス</th>
+        <th>招待を出した人</th>
+        <th>状態</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @invites.each do |invite| %>
+        <tr>
+          <td><%= invite.mail_to %></td>
+          <td><%= User.find_by(account_id: invite.account_id).name %></td>
+          <td><%= invite.state %></td>
+          <td><%= link_to 'Destroy', group_invite_path(id: invite.id), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= link_to 'New Invite', new_group_invite_path, class: 'btn btn-primary mt-5' %>
+
+</main>

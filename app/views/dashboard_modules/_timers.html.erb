@@ -1,0 +1,74 @@
+<div class="card mb-3">
+  <div class="card-header text-white bg-dark">作業時間カウント<a class="float-right text-white" data-toggle="modal" data-target="#timerModal" href="javascript:void(0);"><i class="far fa-edit"></i></a></div>
+  <div class="card-body">
+    <div class="m_timer">
+      <div class="row">
+        <%= select_tag 'page[name]', options_for_select([["Railsの基礎", "rails_base"], ["Rubyの基礎", "ruby_base"]]) %>
+      </div>
+      <div class="row">
+        <div class="mx-auto badge badge-light py-2 px-3 border">進行中タスク名：〇〇〇〇〇〇〇〇〇〇</div>
+      </div>
+      <div class="row">
+        <div class="col mr-3">
+          <div id="id_disp" class="m_timer__num mx-auto row justify-content-around">
+            <div class="hour">00</div>:<div class="min">03</div>:<div class="sec">00</div>
+          </div>
+          <div class="m_timer__label row justify-content-around text-center">
+            <div class="col">HOUR</div><div class="col">MIN</div><div class="col">SEC</div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+            <div class="m_timer__btns w-75 mx-auto py-3 row justify-content-between">
+              <div>
+                <a href="javascript:void(0);" id="id_start" class="text-dark" data-toggle="tooltip" data-placement="top" title="開始する"><i class="fas fa-play-circle fa-2x"></i></a>
+              </div>
+              <div>
+                <a href="javascript:void(0);" id="id_stop" class="text-danger" data-toggle="tooltip" data-placement="top" title="停止する"><i class="fas fa-stop-circle fa-2x"></i></a>
+              </div>
+              <div>
+                <a href="javascript:void(0);" id="id_clear" class="text-dark" data-toggle="tooltip" data-placement="top" title="初期化する"><i class="fas fa-undo-alt fa-2x"></i></a>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="timerModal" tabindex="-1" role="dialog" aria-labelledby="timerModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="timerModalLabel">Add Memo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <%= form_tag({controller: 'timers', action: 'update'}, { method: 'patch', remote: true, class: 'js_timers-form'}) do %>
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="col">
+              <%= label_tag :h, nil, {class: ''} %>
+              <%= number_field_tag :h, nil, { min: 00, max: 99, step: 1, class: 'form-control', placeholder: "Waiting hours..", value: @project.timer.h } %>
+            </div>
+            <div class="col">
+              <%= label_tag :m, nil, {class: ''} %>
+              <%= number_field_tag :m, nil, { min: 00, max: 59, step: 1, class: 'form-control', placeholder: "Waiting minutes..", value: @project.timer.m } %>
+            </div>
+            <div class="col">
+              <%= label_tag :s, nil, {class: ''} %>
+              <%= number_field_tag :s, nil, { min: 00, max: 59, step: 1, class: 'form-control', placeholder: "Waiting seconds..", value: @project.timer.s } %>
+            </div>
+          </div>
+          <%= hidden_field_tag :project_id, @project.id %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <%= submit_tag 'Add', {class: "btn btn-info"} %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

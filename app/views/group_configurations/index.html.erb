@@ -1,0 +1,27 @@
+<% provide(:title, 'グループ設定') %>
+
+<main class="container" style="padding-top: 57px;">
+
+  <h1 class="mb-3">グループ設定</h1>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">
+      <%= link_to '基本設定', group_group_configurations_main_path %>
+    </li>
+    <li class="list-group-item">
+      <%= link_to 'テーマ設定', group_group_configurations_theme_path %>
+    </li>
+    <li class="list-group-item">
+      <%= link_to 'メール配信設定', group_group_configurations_mail_path %>
+    </li>
+    <li class="list-group-item">
+      <%= link_to 'イベント種別登録', group_group_configurations_event_path %>
+    </li>
+    <li class="list-group-item">
+      <%= link_to '施設登録', group_group_configurations_facility_path %>
+    </li>
+    <li class="list-group-item">
+      <%= link_to 'ステータス登録', group_group_configurations_status_path %>
+    </li>
+  </ul>
+
+</main>

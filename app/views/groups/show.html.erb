@@ -1,0 +1,85 @@
+<% provide(:title, 'groups#show') %>
+
+<main class="container-fluid" style="padding-top: 16px;">
+
+  <% flash.each do |key, value| %>
+    <% key = 'success' if key == 'notice' %>
+    <%= content_tag(:div, value, class: "text-center alert alert-#{key}") %>
+  <% end %>
+
+  <div class="row">
+    <div class="col-2">
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">メンバーへのお知らせ</div>
+        <div class="card-body">
+          <%= @group.notice %>
+        </div>
+      </div>
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">リンク集</div>
+        <div class="card-body">
+          
+        </div>
+      </div>
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">参加メンバー
+          <%= link_to '追加', new_group_invite_path(group_id: @group.id), {class: 'text-white float-right'} %>
+        </div>
+        <div class="card-body">
+          <% @group.group_accounts.each do |group_account| %>
+            <% user = User.find_by(account_id: group_account.account_id) %>
+            <div>
+              <img src="<%= "/user_images/#{user.image_name}" %>" width="30">
+              <%= link_to user.name, user_path(user.id) %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div>
+        <a href="">更新履歴を表示</a>
+      </div>
+    </div>
+
+    <div class="col-8">
+      <div class="d-flex justify-content-between">
+        <div><small>新着順に表示 | <a href="#">分類ごとに表示</a></small></div>
+        <div><small>未読のみ | <a href="#">すべて</a></small></div>
+      </div>
+
+      <div class="card mb-3 border-0">
+        <div class="card-header text-white bg-dark">プロジェクト
+          <%= link_to raw('<i class="far fa-plus-square"></i> 登録'), new_group_project_path(group_id: @group.id), {class: 'text-white float-right'} %>
+        </div>
+        <%= render partial: "_group_modules/show_updates", locals: {project_updates: @project_updates} %>
+      </div>
+      
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">掲示板</div>
+        <div class="card-body">
+          
+        </div>
+      </div>
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">共有フォルダ</div>
+        <div class="card-body">
+  
+        </div>
+      </div>
+      <div class="card mb-3 border-0">
+        <div class="card-header text-white bg-dark">イベント</div>
+        <%= render partial: "_group_modules/show_calendar_updates", locals: {calendar_updates: @calendar_updates} %>
+      </div>
+    </div>
+
+    <div class="col-2">
+      <div class="card">
+        <div class="card-header text-white bg-dark">
+          タイムライン
+        </div>
+        <div class="card-body">
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

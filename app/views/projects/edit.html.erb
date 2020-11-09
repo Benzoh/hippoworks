@@ -1,0 +1,13 @@
+<% provide(:title, 'Edit Project') %>
+
+<main class="container" style="padding-top: 57px;">
+  <div class="m_signin text-center">
+    <h1 class="h3 mb-3 font-weight-normal">Edit Project | HippoWorks</h1>
+    <%= render 'edit_form', project: @project %>
+  </div>
+  <div class="text-center">
+    <%= link_to 'Back', group_project_path, class: "btn btn-secondary" %>
+    <%= link_to '削除する', group_project_path, { class: "btn btn-secondary", method: "delete", :confirm => "本当に削除しますか?" } %>
+  </div>
+</main>
+

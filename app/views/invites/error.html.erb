@@ -1,0 +1,10 @@
+<% provide(:title, 'Error') %>
+
+<main class="container" style="padding-top: 57px">
+
+  <% flash.each do |key, value| %>
+    <% key ? 'success' : 'danger' %>
+    <%= content_tag(:div, value, class: "text-center alert alert-#{key}") %>
+  <% end %>
+
+</main>

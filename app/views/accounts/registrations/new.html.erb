@@ -1,0 +1,51 @@
+<main class="container" style="padding-top: 57px;">
+
+  <% flash.each do |key, value| %>
+    <% key ? 'success' : 'danger' %>
+    <%= content_tag(:div, value, class: "text-center alert alert-#{key}") %>
+  <% end %>
+
+  <h2>ユーザー登録</h2>
+
+  <div class="alert alert-danger">
+    このサイトは現在開発途中です。個人のポートフォリオとして作成しているサイトですので一般の方のユーザー登録はご遠慮ください。<br>
+    万が一、このサイト上で発生した事故、事件について一切責任を負いかねますのであしからずお願いいたします。
+  </div>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <%= devise_error_messages! %>
+
+    <div class="form-group">
+      <%= f.label :email %><br />
+      <% if params[:invite_id].present? %>
+        <%= f.email_field :email, class: "form-control", autofocus: true, autocomplete: "email", value: Invite.find_by(id: params[:invite_id]).mail_to %>
+      <% else %>
+        <%= f.email_field :email, class: "form-control", autofocus: true, autocomplete: "email" %>
+      <% end %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :password %>
+      <% if @minimum_password_length %>
+      <em>(<%= @minimum_password_length %> characters minimum)</em>
+      <% end %><br />
+      <%= f.password_field :password, class: "form-control", autocomplete: "off" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :password_confirmation %><br />
+      <%= f.password_field :password_confirmation, class: "form-control", autocomplete: "off" %>
+    </div>
+
+    <div class="d-none">
+      <%= hidden_field_tag :invite_id, params[:invite_id] %>
+    </div>
+
+    <div class="actions mt-4">
+      <%= f.submit "Sign up", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+
+  <%= render "accounts/shared/links" %>
+
+</main>

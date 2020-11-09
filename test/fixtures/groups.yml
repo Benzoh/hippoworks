@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  create_account_id: 1
+  notice: MyString
+  invitation_authority: MyString
+  icon_img: MyString
+
+two:
+  name: MyString
+  create_account_id: 1
+  notice: MyString
+  invitation_authority: MyString
+  icon_img: MyString

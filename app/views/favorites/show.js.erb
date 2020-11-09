@@ -1,0 +1,16 @@
+<% if params[:record_type] == 'comment' %>
+  var elm = $('#<%= "comment-#{params[:record_id]}" %>').find('.js_render-favorite')[0]
+  elm.outerHTML = '<%= j( render( :partial => 'shared/favorite', locals: { record_type: params[:record_type], record_id: params[:record_id] } ) ) %>';
+<% elsif params[:record_type] == 'project' %>
+  var elm = $('.js_render-favorite--project')[0]
+  elm.outerHTML = '<%= j( render( :partial => 'shared/favorite', locals: { record_type: params[:record_type], record_id: params[:record_id] } ) ) %>';
+<% elsif params[:record_type] == 'calendar' %>
+  var elm = $('.js_render-favorite--calendar')[0]
+  elm.outerHTML = '<%= j( render( :partial => 'shared/favorite', locals: { record_type: params[:record_type], record_id: params[:record_id] } ) ) %>';
+<% elsif params[:record_type] == 'cabinet' %>
+  var elm = $('.js_render-favorite--cabinet')[0]
+  elm.outerHTML = '<%= j( render( :partial => 'shared/favorite', locals: { record_type: params[:record_type], record_id: params[:record_id] } ) ) %>';
+<% else %>
+  <%# TODO: コメント以外の対応 %>
+  alert('save!');
+<% end %>

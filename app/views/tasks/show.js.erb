@@ -1,0 +1,29 @@
+<%
+html = <<~EOS
+<div class="custom-control custom-checkbox mb-1">
+  <input type="checkbox" class="custom-control-input" id="task_id#{ @task.id }">
+  <label class="custom-control-label" for="task_id#{ @task.id }">#{ @task.name }</label>
+  <!--
+  <span class="ml-2 js_count">
+    <span style="font-size: 0.8rem;">
+      #{ get_formatted_time(@task.id, @task.project_id) }
+    </span>
+    <a href="javascript:void(0);" class="count_start text-dark"><i class="fas fa-play-circle"></i></a>
+    <a href="javascript:void(0);" class="count_stop text-danger"><i class="fas fa-stop-circle"></i></a>
+  -->
+    #{ hidden_field_tag :working_hour_id, @task.working_hour.id }
+    #{ hidden_field_tag :task_id, @task.id }
+  <!--
+  </span>
+  <span class="float-right">#{ link_to raw('<i class="fas fa-times"></i>'), task_path(@task), {remote: true, :method => :delete, :class => 'text-dark'} }</span>
+  -->
+</div>
+EOS
+
+logger.debug 'DEBUG >>>'
+logger.debug html.html_safe
+logger.debug '<<< DEBUG'
+%>
+
+$('#form_tasks').append('<%= html.gsub(/\n/, '\\n').html_safe %>');
+$('.js_tasks-form input#name').val('');

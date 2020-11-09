@@ -1,0 +1,2 @@
+class GroupConfiguration < ApplicationRecord
+end

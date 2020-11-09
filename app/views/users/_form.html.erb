@@ -1,0 +1,61 @@
+<%= form_with(model: user, local: true, multipart: true) do |form| %>
+  <% if user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+      <% user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group d-flex align-items-end">
+    <div class="profile_image">
+      <img id="uploaded-image" src="<%= "/user_images/#{@current_account.user.image_name}" %>" width="96">
+    </div>
+    <div class="ml-4">
+      <label class="mb-0">
+        <span class="btn btn-primary">
+          Choose File
+          <input type="file" name="image" id="image-uploader" style="display:none">
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :company %>
+    <%= form.text_field :company, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :birthday %>
+    <%= form.date_field :birthday, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :address %>
+    <%= form.text_field :address, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :url %>
+    <%= form.text_field :url, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :introduction %>
+    <%= form.text_area :introduction, class: "form-control" %>
+  </div>
+
+  <div class="actions mt-4">
+    <%= form.submit '更新する', class: "btn btn-primary" %>
+  </div>
+<% end %>

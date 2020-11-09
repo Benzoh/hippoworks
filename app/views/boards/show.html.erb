@@ -1,0 +1,45 @@
+<% provide(:title, '掲示板 - 詳細') %>
+
+<main class="container-fluid" style="padding-top: 16px;">
+  <% flash.each do |key, value| %>
+    <% key = 'success' if key == 'notice' %>
+    <%= content_tag(:div, value, class: "text-center alert alert-#{key}") %>
+  <% end %>
+  
+  <div class="row">
+    <div class="col-2">
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">カテゴリー
+          <a class="float-right text-white" href=""><i class="far fa-edit"></i></a>
+        </div>
+        <div class="list-group list-group-flush">
+          <a href="" class="text-dark list-group-item list-group-item-action">Cras justo odio</a>
+          <a href="" class="text-dark list-group-item list-group-item-action">Dapibus ac facilisis in</a>
+          <a href="" class="text-dark list-group-item list-group-item-action">Morbi leo risus</a>
+          <a href="" class="text-dark list-group-item list-group-item-action">Porta ac consectetur ac</a>
+          <a href="" class="text-dark list-group-item list-group-item-action">Vestibulum at eros</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-10">
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">掲示板詳細
+          <a class="float-right text-white" href="<%= url_for('edit_group_project_path') %>"><i class="far fa-edit"></i> 編集</a>
+        </div>
+        <div class="card-body <%= 'unread' if @nids.include?(@board.id) %>">
+          <div class="jumbotron py-3 mb-0">
+            <div class="d-flex">
+              <div>
+                <%= render :partial => 'shared/favorite', locals: { record_type: 'board', record_id: @board.id } %>
+              </div>
+              <h3 class="display-6 ml-2"><%= @board.name %></h3>
+            </div>
+          </div>
+          <div class="py-3"><%= simple_format @board.description %></div>
+          <%= render :partial => 'shared/like', locals: { thread_type: 'board', thread_id: @board.id } %>
+        </div>
+      </div>
+      <%= get_comment_form(@board, @comments, @nids) %>
+    </div>
+  </div>
+</main>

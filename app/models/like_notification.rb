@@ -1,0 +1,2 @@
+class LikeNotification < ApplicationRecord
+end

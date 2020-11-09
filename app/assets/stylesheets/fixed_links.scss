@@ -1,0 +1,19 @@
+// Place all the styles related to the fixed_links controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.fixed-link {
+  display: block;
+  position: absolute;
+  bottom: 30px;
+  right: 10px;
+  margin: auto;
+  width: 500px;
+  border: solid 1px #ccc;
+  background-color: #fff;
+  box-shadow: 0px 3px 5px 0px #686161;
+}
+
+.fixed-link-btn {
+  position: relative;
+}

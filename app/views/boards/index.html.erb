@@ -1,0 +1,76 @@
+<% provide(:title, '掲示板 - 一覧') %>
+
+<main class="container-fluid" style="padding-top: 16px;">
+
+  <% if notice %>
+    <p id="notice" class="text-center alert alert-success"><%= notice %></p>
+  <% end %>
+
+  <div class="row">
+
+    <div class="col-2">
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">掲示板</div>
+        <div class="card-body">
+          <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action active"> - すべて</a>
+            <a href="#" class="list-group-item list-group-item-action"> - カテゴリ</a>
+            <a href="#" class="list-group-item list-group-item-action"> - カテゴリ</a>
+            <a href="#" class="list-group-item list-group-item-action"> - カテゴリ</a>
+            <a href="#" class="list-group-item list-group-item-action"> - カテゴリ</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-10">
+      <%= link_to '掲示板を作成する', new_group_board_path, { class: "btn btn-primary", style: "margin-top:2px;" } %>
+      <div class="float-right" style="padding: 10px;">
+        <a href="#"><i class="fas fa-search"></i> 掲示板を検索する</a>
+      </div>
+      <hr>
+      <%# TODO:絞り込み機能 %>
+      <%= form_tag('hoge', { method: "get", remote: true, name: "projectFilter" } ) do %>
+        <div class="d-flex">
+          <div class="ml-auto">
+            <%# TODO: ソートパラメータの追加 %>
+            <span>ソート</span>
+            <%= select_tag "sort", options_for_select([
+              ["納期：昇順", :asc],
+              ["納期：降順", :desc],
+            ],
+            params[:sort]),
+            { id: 'sort_id', class: 'custom-select js_project-filter', style: 'width: auto' } %>
+          </div>
+        </div>
+        <%= hidden_field_tag "filter", true %>
+      <% end %>
+
+      <div class="list-group mt-3">
+        <% if @boards.present? %>
+          <% @boards.each do |board| %>
+            <div class="list-group-item list-group-item-action">
+              <div class="">
+                <a href="<%= url_for(group_board_path(id: board.id)) %>" style="line-height: 1.8;">
+                  <span class="font-weight-bold ml-2"><%= board.name %></span>
+                </a>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="ml-2"><%= board.description %></span>
+                <span class="ml-2"><small>最終更新：<%= board.updated_at %> <%= board.last_update_user_name %></small></span>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <p>掲示板が作成されていません。</p>
+        <% end %>
+      </div>
+
+      <div class="c_pagination p-5">
+        <%#= paginate @projects %>
+      </div>
+    </div>
+
+  </div>
+
+</main>

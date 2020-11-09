@@ -1,0 +1,115 @@
+<%= form_with(model: calendar, local: true) do |form| %>
+  <% if calendar.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(calendar.errors.count, "error") %> prohibited this calendar from being saved:</h2>
+
+      <ul>
+      <% calendar.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <label>時刻</label>
+  <div class="form-row">
+    <div class="form-group col-md-1">
+      <%= form.select :start_hour, get_hours, {}, { class: 'form-control' } %>
+    </div>
+
+    <div class="form-group col-md-1">
+      <%= form.select :start_minute, get_minutes, {}, { class: 'form-control' } %>
+    </div>
+
+    <div class="p-2">〜</div>
+
+    <div class="form-group col-md-1">
+      <%= form.select :end_hour, get_hours, {}, { class: 'form-control' } %>
+    </div>
+
+    <div class="form-group col-md-1">
+      <%= form.select :end_minute, get_minutes, {}, { class: 'form-control' } %>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <%= form.label :repeat_condition_type, '条件' %>
+      <%= form.select :repeat_condition_type, [['毎日', 'daily'],['毎日（土日除く）', 'weekday'],['毎週', 'weekly'],['隔週','biweekly'],['毎月', 'monthly']], { include_blank: '繰り返し条件を選択' }, { class: 'form-control' } %>
+    </div>
+  </div>
+
+  <!-- TODO: 条件での出し分け -->
+  <div class="form-group">
+    <%= form.label :repeat_condition_day_of_week, '曜日（毎週・隔週で選択）', { class: 'mr-3' } %>
+    <% days = [['月', 'mon'], ['火', 'tue'], ['水', 'wen'], ['木', 'thu'], ['金', 'fri'], ['土', 'sat'], ['日', 'sun']] %>
+    <% days.each do |day| %>
+      <%= form.check_box :repeat_condition_day_of_week, { multiple: true }, day[1], { class: 'form-control' } %>
+      <label class="mr-2" for="<%= 'calendar_repeat_condition_day_of_week_' + day[1] %>"><%= day[0] %></label>
+    <% end %>
+  </div>
+
+  <label>期間</label>
+  <div class="form-row">
+    <div class="form-group col-md-1">
+      <%= form.select :start_year, get_years, {}, { class: 'form-control' } %>
+    </div>
+
+    <div class="form-group col-md-1">
+      <%= form.select :start_month, get_months, {}, { class: 'form-control' } %>
+    </div>
+
+    <div class="form-group col-md-1">
+      <%= form.select :start_day, get_days, {}, { class: 'form-control' } %>
+    </div>
+
+    <div class="p-2">〜</div>
+
+    <div class="form-group col-md-1">
+      <%= form.select :end_year, get_years, {}, { class: 'form-control' } %>
+    </div>
+
+    <div class="form-group col-md-1">
+      <%= form.select :end_month, get_months, {}, { class: 'form-control' } %>
+    </div>
+
+    <div class="form-group col-md-1">
+      <%= form.select :end_day, get_days, {}, { class: 'form-control' } %>
+    </div>
+
+    <div class="p-2">
+      <%= form.check_box :period_unlimited, { class: '' } %>
+      <%= form.label :period_unlimited, '期限なし' %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :name, 'タイトル' %>
+    <%= form.text_field :name, { class: 'form-control' } %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :description, '詳細' %>
+    <%= form.text_area :description, { class: 'form-control', style: 'height:120px;' } %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :group_ids, '公開先グループ' %>
+    <%= form.select :group_ids, @joined_groups.collect {|g| [g.name, g.id]}, {include_hidden: false}, { class: 'form-control mb-2', multiple: true } %>
+  </div>
+
+  <div class="form-group mt-2">
+    <label for="file">添付ファイル</label>
+    <%#= TODO: 複数投稿にする %>
+    <%#= TODO: 5つまでにする %>
+    <%= form.file_field :uploads, { multiple: true, class: 'form-control-file' } %>
+  </div>
+
+  <%= form.hidden_field :mode, { value: 'repeat' } %>
+  <%= form.hidden_field :account_id, { value: @current_account.id } %>
+
+  <div class="actions mt-5">
+    <%= link_to 'Back', calendars_path, class: 'mr-3 btn btn-secondary' %>
+    <%= form.submit '予定を保存する', { class: "btn btn-info" } %>
+  </div>
+<% end %>

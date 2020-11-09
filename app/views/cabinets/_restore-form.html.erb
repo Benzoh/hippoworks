@@ -1,0 +1,26 @@
+<%= form_for(cabinet, :url => {:action => 'revert'}) do |form| %>
+  <%= form.fields_for :share_file, cabinet.share_file || ShareFile.new do |sf| %>
+    <div class="field mb-3">
+      <label for="">ファイル名</label>
+      <%= cabinet.share_file.files[0].filename %>
+    </div>
+    <div class="field mb-3">
+      <label for="">作成日時</label>
+      <%= cabinet.share_file.created_at %>
+    </div>
+    <div class="field mb-3">
+      <%= sf.label :comment, 'コメント' %>
+      <%= sf.text_area :comment, { class: 'form-control-file', value: nil } %>
+    </div>
+
+    <%= sf.hidden_field :restore_version, { value: params[:version] } %>
+  <% end %>
+
+  <%= form.hidden_field :group_id %>
+
+  <div class="actions mt-3">
+    <%= form.submit '変更する', { class: "btn btn-info" } %>
+  </div>
+<% end %>
+
+

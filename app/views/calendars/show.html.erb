@@ -1,0 +1,121 @@
+<% provide(:title, 'マイカレンダー | 詳細') %>
+
+<main class="container-fluid" style="padding-top: 57px">
+  <% flash.each do |key, value| %>
+    <% key ? 'success' : 'danger' %>
+    <%#= TODO: リファクタリング %>
+    <% key = 'success' if key == 'notice' %>
+    <%= content_tag(:div, value, class: "text-center alert alert-#{key}") %>
+  <% end %>
+  <div class="row">
+    <div class="col-2">
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">表示</div>
+        <div class="card-body p-0">
+          <div class="list-group list-group-flush">
+            <a class="list-group-item" href="#">日表示［未実装］</a>
+            <a class="list-group-item" href="<%= url_for(weekly_calendar_path) %>">週表示</a>
+            <a class="list-group-item" href="#">月表示［未実装］</a>
+            <a class="list-group-item" href="<%= url_for(agenda_calendar_path) %>">一覧表示</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-10">
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">カレンダー詳細
+          <div class="float-right">
+            <a class="ml-3 text-white" href="<%= url_for(edit_calendar_path(@calendar)) %>"><i class="far fa-edit"></i> 編集</a>
+            <a class="ml-3 text-white" href="<%= url_for(calendar_path(@calendar)) %>" data-method="delete" data-confirm="本当に削除しますか？"><i class="fas fa-trash-alt"></i> 削除</a>
+          </div>
+        </div>
+        <div class="card-body <%= 'unread' if @nids.include?(@calendar.id) %>">
+          <div class="jumbotron py-3 mb-0">
+            <div class="d-flex">
+              <div>
+                <%= render :partial => 'shared/favorite', locals: { record_type: 'calendar', record_id: @calendar.id } %>
+              </div>
+              <h3 class="display-6 ml-2"><%= @calendar.name %></h3>
+            </div>
+          </div>
+          <table class="table table-bordered table-sm mt-3">
+            <tbody>
+              <tr>
+                <th style="width:150px;">日時</th>
+                <% if @calendar.mode == 'normal' %>
+                  <td>
+                    <%= @calendar.start_year %>年<%= @calendar.start_month %>月<%= @calendar.start_day %>日 <%= format('%02d', @calendar.start_hour) %>:<%= format('%02d', @calendar.start_minute) %> 〜
+                    <%= @calendar.end_year %>年<%= @calendar.end_month %>月<%= @calendar.end_day %>日 <%= format('%02d', @calendar.end_hour) %>:<%= format('%02d', @calendar.end_minute) %>
+                  </td>
+                <% elsif @calendar.mode == 'period' %>
+                  <td>
+                    <%= @calendar.start_year %>年<%= @calendar.start_month %>月<%= @calendar.start_day %>日 〜
+                    <%= @calendar.end_year %>年<%= @calendar.end_month %>月<%= @calendar.end_day %>日
+                  </td>
+                <% elsif @calendar.mode == 'repeat' %>
+                  <td>
+                    <%= format('%02d', @calendar.start_hour) %>:<%= format('%02d', @calendar.start_minute) %> 〜
+                    <%= format('%02d', @calendar.end_hour) %>:<%= format('%02d', @calendar.end_minute) %>
+                    <%= @calendar.start_year %>年<%= @calendar.start_month %>月<%= @calendar.start_day %>日  〜
+                    <%= @calendar.end_year %>年<%= @calendar.end_month %>月<%= @calendar.end_day %>日
+                    <% if @calendar.period_unlimited %>
+                    （終日）
+                    <% end %>
+                  </td>
+                <% end %>
+              </tr>
+              <tr>
+                <th>作成者</th>
+                <td>
+                  <img src="<%= "/user_images/#{User.find_by(account_id: @calendar.account_id).image_name}" %>" width="25">
+                  <%= User.find_by(account_id: @calendar.account_id).name %>
+                </td>
+              </tr>
+              <tr>
+                <th>公開先グループ</th>
+                <td>
+                  <% @calendar.calendar_groups.each do |cc| %>
+                    <div><%= Group.find_by(id: cc.group_id).name %></div>
+                  <% end %>
+                </td>
+              </tr>
+              <tr>
+                <th>添付ファイル</th>
+                <td>
+                  <% if @calendar.uploads.attached? %>
+                    <% @calendar.uploads.each do |file| %>
+                      <% if file.previewable? %>
+                        <%= link_to(image_tag(file.preview(resize: "200x200>")), url_for(file)) %>
+                      <% elsif file.variable? %>
+                        <%= link_to(image_tag(file.variant(resize: "200x200")), url_for(file)) %>
+                      <% else %>
+                        <%= link_to file.filename, rails_blob_path(file, disposition: "attachment") %>
+                      <% end %>
+                    <% end %>
+                  <% end %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="card-text">
+            <p><%= @calendar.description %></p>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between">
+            <%= render :partial => 'shared/like', locals: { thread_type: 'calendar', thread_id: @calendar.id } %>
+            <div style="font-size: 13px;">
+              <div>登録 <%= @calendar.created_at.strftime("%Y/%m/%d %H:%M") %> <%= User.find_by(account_id: @calendar.account_id).name %></div>
+              <div>更新 <%= @calendar.updated_at.strftime("%Y/%m/%d %H:%M") %> <%= User.find_by(account_id: @calendar.updated_account_id).name %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <%= get_comment_form(@calendar, @comments, @nids) %>
+
+    </div>
+
+
+  </div>
+</main>

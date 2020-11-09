@@ -1,0 +1,34 @@
+<div class="card mb-3">
+  <div class="card-header text-white bg-dark">
+    <a class="text-white" data-toggle="collapse" href="#standard-operation" role="button" aria-expanded="false" aria-controls="standard-operation">
+      標準作業
+    </a>
+    <a class="float-right text-white js_standard-operations-form-activate-btn" href="javascript:void(0);"><i class="fas fa-plus"></i></a>
+  </div>
+  <div class="collapse show" id="standard-operation">
+    <div class="card-body">
+      <% StandardOperation.where(project_id: @project.id).each do |so| %>
+        <%= form_tag({controller: 'standard_operations', action: 'update'}, { method: 'patch', authenticity_token: true, remote: true, id: "form_standard_operations", class: 'was-validated'}) do %>
+          <div class="custom-control custom-checkbox mb-1">
+            <input type="checkbox" class="custom-control-input" id="standard_operation_id<%= so.id %>" name="state" value="1" onchange='this.form.submit()' <%= 'checked' if so.state %> required>
+            <label class="custom-control-label" for="standard_operation_id<%= so.id %>"><%= so.task %></label>
+            <span class="float-right"><%= link_to raw('<i class="fas fa-times"></i>'), standard_operation_path(so), {remote: true, :method => :delete, :class => 'text-dark'} %></span>
+          </div>
+          <%= hidden_field_tag :standard_operation_id, so.id %>
+        <% end %>
+      <% end %>
+
+      <%= form_tag({controller: 'standard_operations', action: 'create'}, { remote: true, class: 'js_standard-operations-form'}) do %>
+        <div class="field mt-3 mb-2">
+          <%= label_tag :task, nil, {class: 'sr-only'} %>
+          <%= text_field_tag :task, nil, {class: 'form-control', placeholder: "task"} %>
+        </div>
+        <div class="actions">
+          <%= submit_tag 'Add', {class: "btn btn-sm btn-info"} %>
+        </div>
+        <%= hidden_field_tag :project_id, @project.id %>
+      <% end %>
+
+    </div>
+  </div>
+</div>

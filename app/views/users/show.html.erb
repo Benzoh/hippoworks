@@ -1,0 +1,50 @@
+<% provide(:title, 'プロフィール') %>
+
+<main class="container" style="padding-top: 57px;">
+
+  <% if notice %>
+    <div class="alert alert-success" role="alert">
+      <%= notice %>
+    </div>
+  <% end %>
+
+  <h1 class="mb-3">プロフィール</h1>
+
+  <% if @current_account.id == @user.account_id %>
+    <%= link_to 'プロフィールを編集する', edit_user_path(@user), class: "btn btn-primary" %>
+  <% end %>
+
+  <div class="profile_image mt-5">
+    <img src="<%= "/user_images/#{@user.image_name}" %>" width="96">
+  </div>
+
+  <table class="table mt-4">
+    <tbody>
+      <tr>
+        <th width="200" scope="row">名前</th>
+        <td><%= @user.name %></td>
+      </tr>
+      <tr>
+        <th scope="row">会社名</th>
+        <td><%= @user.company %></td>
+      </tr>
+      <tr>
+        <th scope="row">誕生日</th>
+        <td><%= @user.birthday %></td>
+      </tr>
+      <tr>
+        <th scope="row">住所</th>
+        <td><%= @user.address %></td>
+      </tr>
+      <tr>
+        <th scope="row">URL</th>
+        <td><%= @user.url %></td>
+      </tr>
+      <tr>
+        <th scope="row">自己紹介</th>
+        <td><%= @user.introduction %></td>
+      </tr>
+    </tbody>
+  </table>
+
+</main>

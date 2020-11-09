@@ -1,0 +1,12 @@
+<% provide(:title, '掲示板 - 作成') %>
+
+<main class="container" style="padding-top: 57px;">
+  <div class="py-5">
+    <h1 class="h3 mb-3 font-weight-normal">掲示板を作成する</h1>
+    <%= render 'form', board: @board %>
+    <div class="mt-3">
+      <%= link_to 'Back', group_boards_path %>
+    </div>
+  </div>
+</main>
+

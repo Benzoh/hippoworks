@@ -1,0 +1,16 @@
+<% fav = Favorite.find_by(account_id: @current_account.id, record_id: record_id, record_type: record_type) %>
+<% if record_type == 'project' %>
+  <span class="js_render-favorite--project">
+<% elsif record_type == 'calendar' %>
+  <span class="js_render-favorite--calendar">
+<% elsif record_type == 'cabinet' %>
+  <span class="js_render-favorite--cabinet">
+<% else %>
+  <span class="js_render-favorite">
+<% end %>
+    <% if fav %>
+      <a href="<%= url_for("/favorites/#{record_type}/#{record_id}/destroy") %>" data-method="post" data-remote="true"><i class="fas fa-star"></i></a>
+    <% else %>
+      <a href="<%= url_for("/favorites/#{record_type}/#{record_id}/create") %>" data-method="post" data-remote="true"><i class="far fa-star"></i></a>
+    <% end %>
+  </span>

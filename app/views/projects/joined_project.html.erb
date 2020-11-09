@@ -1,0 +1,53 @@
+<% provide(:title, 'Projects') %>
+
+<main class="container" style="padding-top: 57px;">
+  <% if notice %>
+    <p id="notice" class="text-center alert alert-success"><%= notice %></p>
+  <% end %>
+  <h2>参加プロジェクト一覧</h2>
+  
+  <div class="container bg-light p-3 mt-3">
+    <%# TODO:絞り込み機能 %>
+    <%= form_tag(joined_projects_path, { method: "get", remote: true, name: "joinedProjectFilter" } ) do %>
+      <div class="d-flex">
+        <div>
+          <span>グループ</span>
+            <%# TODO: 値保持・すべて表示 %>
+            <%= select_tag "group", options_from_collection_for_select(@joined_groups, "id", "name", params[:group]), { id: 'filter_group', class: 'custom-select js_joined-project-filter', :include_blank => 'すべて' } %>
+        </div>
+        <div class="ml-3">
+          <span>ステータス</span>
+          <%= select_tag "status", options_from_collection_for_select(Status.all, "id", "name", params[:status]), { id: 'filter_status', class: 'custom-select js_joined-project-filter', :include_blank => 'すべて' } %>
+        </div>
+        <div class="ml-auto">
+          <span>ソート</span>
+          <%= select_tag "sort", options_for_select([
+            ["納期：昇順", :asc],
+            ["納期：降順", :desc],
+          ],
+          params[:sort]),
+          { id: 'sort_id', class: 'custom-select js_joined-project-filter' } %>
+        </div>
+      </div>
+      <%= hidden_field_tag "filter", true %>
+    <% end %>
+  </div>
+
+  <div class="list-group mt-3">
+    <% @projects.each do |project| %>
+      <a href="<%= url_for(group_dashboard_path(group_id: project.group_id, id: project.id)) %>" class="list-group-item list-group-item-action">
+        <span>【<%= Status.find_by(id: project.status_id).name %>】</span>
+        <span class="font-weight-bold"><%= Group.find_by(id: project.group_id).name %>｜</span>
+        <span class="font-weight-bold">Pman: <%= project.number %></span>
+        <span class="ml-2"><%= project.name %></span>
+        <span class="mt-1 float-right badge badge-info"><%= project.delivery_date %></span>
+      </a>
+    <% end %>
+  </div>
+
+
+  <div class="c_pagination p-5">
+    <%= paginate @projects %>
+  </div>
+
+</main>

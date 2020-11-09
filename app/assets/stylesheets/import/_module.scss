@@ -1,0 +1,54 @@
+// module
+
+.m_sitename {
+  color: #fff;
+  background-color: #222;
+}
+
+.m_status-items {
+  .badge {
+    padding: 0.4em 0.6em;
+  }
+}
+
+.m_timer {
+  &__num {
+    font-size: 2rem;
+  }
+
+  &__label {
+    font-size: 0.6rem;
+  }
+}
+
+.m_notifications,
+.m_like-notifications,
+.m_favorite-list {
+  width: 450px;
+  height: 100%;
+  position: fixed;
+  background: #f8f9fa;
+  right: 0px;
+  top: 0px;
+  padding-top: 72px;
+  transition: 0.3s all ease-in-out;
+  z-index: 1029;
+
+  &.close {
+    right: -450px;
+    transition: 0.3s all ease-in-out;
+  }
+}
+
+.m_signin {
+  width: 100%;
+  max-width: 450px;
+  padding: 15px;
+  margin: auto;
+
+  &__guide-link {
+    a {
+      font-size: 0.8rem;
+    }
+  }
+}

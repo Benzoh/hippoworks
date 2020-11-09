@@ -1,0 +1,75 @@
+<div class="list-group">
+  <% if calendar_updates.blank? %>
+    <div class="list-group-item flex-column"><small>新着情報はありません。</small></div>
+  <% end %>
+  <% calendar_updates.each do |parent_id, updates| %>
+    <% if updates.first[:thread_type].present? %>
+      <% model = Object.const_get(updates.first.thread_type.classify).find_by(id: parent_id) %>
+    <% else %>
+      <% model = Object.const_get(updates.first.parent_type.classify).find_by(id: parent_id) %>
+    <% end %>
+    <div class="list-group-item list-group-item-action flex-column align-items-start">
+      <div class="d-flex w-100 justify-content-between">
+        <div class="open-icon btn btn-sm border" data-toggle="collapse" href="#collapse_<%= parent_id %>" role="button" aria-expanded="false" aria-controls="collapse_<%= parent_id %>">
+          <!-- TODO: アイコン入れる｜詳細を展開 -->
+          ↓
+        </div>
+        <div class="ml-3 mr-auto">
+          <h5 class="mb-0" style="line-height:1.5;">
+            <% calendar = Calendar.find_by(id: updates.first.parent_id) %>
+            <a href="<%= url_for(calendar_path(calendar)) %>"><%= calendar.name %></a>
+          </h5>
+        </div>
+        <div>
+          <% user = User.find_by(account_id: model.account_id) %>
+          <img src="<%= "/user_images/#{user.image_name}" %>" width="30"> <%= user.name %>
+        </div>
+        <div class="ml-3">
+          <small class="ml-2"><%= updates.first.updated_at.strftime('%Y年%m月%d日 %H:%M') %></small>
+        </div>
+        <% notification = Notification.find_by(parent_id: updates.first.parent_id) %>
+        <%= link_to "既読", notification_path(id: notification.id, parent_type: 'calendar', parent_id: parent_id, mark_as_read: 'true'), { remote: true, method: :delete, id: "mark_as_read_#{notification.id}", class:"ml-3 btn btn-sm btn-primary" } %>
+      </div>
+      <div class="collapse mt-3" id="collapse_<%= updates.first.parent_id %>">
+        <div class="pb-2">
+          <small>
+            <%#= TODO: リファクタリング %>
+            日時: 
+            <% if model.mode == 'normal' %>
+              <%= model.start_year %>年<%= model.start_month %>月<%= model.start_day %>日 <%= format('%02d', model.start_hour) %>:<%= format('%02d', model.start_minute) %> 〜
+              <%= model.end_year %>年<%= model.end_month %>月<%= model.end_day %>日 <%= format('%02d', model.end_hour) %>:<%= format('%02d', model.end_minute) %>
+            <% elsif model.mode == 'period' %>
+              <%= model.start_year %>年<%= model.start_month %>月<%= model.start_day %>日 〜
+              <%= model.end_year %>年<%= model.end_month %>月<%= model.end_day %>日
+            <% elsif model.mode == 'repeat' %>
+              <%= format('%02d', model.start_hour) %>:<%= format('%02d', model.start_minute) %> 〜
+              <%= format('%02d', model.end_hour) %>:<%= format('%02d', model.end_minute) %>
+              <%= model.start_year %>年<%= model.start_month %>月<%= model.start_day %>日  〜
+              <%= model.end_year %>年<%= model.end_month %>月<%= model.end_day %>日
+              <% if model.period_unlimited %>
+              （終日）
+              <% end %>
+            <% end %>
+            作成者: <%= User.find_by(account_id: model.account_id).name %>
+          </small>
+        </div>
+        <% updates.each do |update| %>
+          <% if update[:thread_type].present? %>
+            <div class="mb-4">
+              <div class="pt-3 pb-2">
+                <%= simple_format Object.const_get(update.parent_type.classify).find_by(id: update.parent_id).description %>
+              </div>
+              <div class="pt-2 border-top"><a href="">♥ <small>いいね！</small></a></div>
+            </div>
+          <% else %>
+            <div class="card card-body mb-2">
+              <div class="pt-1"><small>投稿者：<%= User.find_by(id: update.user_id).name %> / 投稿時間：<%= update.updated_at.strftime('%Y年%m月%d日 %H:%M') %></small></div>
+              <div class="pt-3 pb-2"><%= simple_format update.body %></div>
+              <div class="pt-2 border-top"><a href="">♥ <small>いいね！</small></a></div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,2 @@
+class EntryGroup < ApplicationRecord
+end

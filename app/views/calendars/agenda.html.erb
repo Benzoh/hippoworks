@@ -1,0 +1,66 @@
+<% provide(:title, 'マイカレンダー') %>
+
+<main class="container-fluid" style="padding-top: 57px">
+  <% flash.each do |key, value| %>
+    <% key = 'success' if key == 'notice' %>
+    <%= content_tag(:div, value, class: "text-center alert alert-#{key}") %>
+  <% end %>
+
+  <div class="row">
+
+    <div class="col-2">
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">表示</div>
+        <div class="card-body p-0">
+          <div class="list-group list-group-flush">
+            <a class="list-group-item" href="#">日表示［未実装］</a>
+            <a class="list-group-item" href="<%= url_for(weekly_calendar_path) %>">週表示</a>
+            <a class="list-group-item" href="#">月表示［未実装］</a>
+            <a class="list-group-item active" href="<%= url_for(agenda_calendar_path) %>">一覧表示</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-10">
+
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">マイカレンダー
+          <a class="float-right text-white" href="javascript:alert('未実装です。');">CSVで出力する</a>
+        </div>
+        <div class="card-body">
+          <%= link_to '予定を登録する', new_calendar_path, class: "btn btn-primary" %>
+          <hr>
+          <div class="d-flex py-3">
+            <div class="mr-auto"><strong><%= @time.strftime("%Y/%m/%d (#{@wd[@time.wday]})") %> 〜 <%= @time.since(4.months).strftime("%Y/%m/%d (#{@wd[@time.since(4.months).wday]})") %></strong></div>
+            <div class="px-2"><a href="<%= url_for agenda_calendar_path(starting_point: @time.ago(4.months).strftime("%Y-%m-%d")) %>">前へ</a></div>
+            <div class="px-2"><a href="<%= url_for agenda_calendar_path(starting_point: Time.zone.now.strftime("%Y-%m-%d")) %>">今日</a></div>
+            <div class="px-2"><a href="<%= url_for agenda_calendar_path(starting_point: @time.since(4.months).strftime("%Y-%m-%d")) %>">次へ</a></div>
+          </div>
+
+          <table class="calendar mt-2 w-100">
+            <tr>
+              <th class="border p-2" width="300">日時</th>
+              <th class="border p-2" width="300">予定</th>
+              <th class="border p-2">内容</th>
+            </tr>
+            <% @calendars.each do |calendar| %>
+              <tr>
+                <td class="border p-2">
+                  <%= "#{calendar.start_year}/#{calendar.start_month}/#{calendar.start_day} #{format('%02d', calendar.start_hour)}:#{format('%02d', calendar.start_minute)} - #{calendar.end_year}/#{calendar.end_month}/#{calendar.end_day} #{format('%02d', calendar.end_hour)}:#{format('%02d', calendar.end_minute)}" %>
+                </td>
+                <td class="border p-2">
+                  <% if calendar.account_id != @current_account.id %>
+                    <i class="fas fa-share-alt text-info"></i>
+                  <% end %>
+                  <%= link_to calendar.name, calendar_path(calendar) %>
+                </td>
+                <td class="border p-2"><%= calendar.description %></td>
+              </tr>
+            <% end %>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

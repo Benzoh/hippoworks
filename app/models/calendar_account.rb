@@ -1,0 +1,2 @@
+class CalendarAccount < ApplicationRecord
+end

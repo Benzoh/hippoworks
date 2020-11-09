@@ -1,0 +1,11 @@
+<main class="container" style="padding-top: 57px">
+
+  <% flash.each do |key, value| %>
+    <% key ? 'success' : 'danger' %>
+    <%= content_tag(:div, value, class: "text-center alert alert-#{key}") %>
+  <% end %>
+
+  <h1>Welcome#index</h1>
+  <p>Find me in app/views/welcome/index.html.erb</p>
+</main>
+

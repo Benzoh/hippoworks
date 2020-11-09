@@ -1,0 +1,10 @@
+// Place all the styles related to the StandardOperations controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.js_standard-operations-form {
+  display: none;
+  &.show {
+    display: block;
+  }
+}

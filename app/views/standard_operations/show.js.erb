@@ -1,0 +1,16 @@
+<%
+html = <<~EOS
+<div class="custom-control custom-checkbox mb-1">
+  <input type="checkbox" class="custom-control-input" id="standard_operation_id#{ @standard_operation.id }" required>
+  <label class="custom-control-label" for="standard_operation_id#{ @standard_operation.id }">#{ @standard_operation.task }</label>
+  <span class="float-right">#{ link_to raw('<i class="fas fa-times"></i>'), standard_operation_path(@standard_operation), {remote: true, :method => :delete, :class => 'text-dark'} }</span>
+</div>
+EOS
+
+logger.debug 'DEBUG >>>'
+logger.debug html.html_safe
+logger.debug '<<< DEBUG'
+%>
+
+$('#form_standard_operations').append('<%= html.gsub(/\n/, '\\n').html_safe %>');
+$('.js_standard-operations-form input#task').val('');

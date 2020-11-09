@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1><%= @invite.mail_to %>宛にグループへの招待が届いています。</h1>
+    <p>下のリンクからユーザー登録を完了してください。</p>
+    <p><%= link_to 'グループに参加する', @url %></p>
+  </body>
+</html>

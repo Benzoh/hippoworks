@@ -1,0 +1,2 @@
+var elm = $('#<%= "like-#{params[:thread_type]}-#{params[:thread_id]}" %>')[0]
+elm.outerHTML = '<%= j( render( :partial => 'shared/like', locals: { thread_type: params[:thread_type], thread_id: params[:thread_id] } ) ) %>';

@@ -1,0 +1,33 @@
+<%= form_for(cabinet, :url => {:action => 'update'}) do |form| %>
+  <% if cabinet.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(cabinet.errors.count, "error") %> prohibited this cabinet from being saved:</h2>
+
+      <ul>
+      <% cabinet.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form.fields_for :share_file, cabinet.share_file || ShareFile.new do |sf| %>
+    <div class="form-group mb-3">
+      <%= sf.label :files, 'ファイル' %>
+      <%= sf.file_field :files, { multiple: true, class: 'form-control-file' } %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= sf.label :comment, 'コメント' %>
+      <%= sf.text_area :comment, { value: nil, class: 'form-control' } %>
+    </div>
+  <% end %>
+
+  <%= form.hidden_field :group_id %>
+
+  <div class="actions mt-3">
+    <%= form.submit '保存する', {class: "btn btn-info"} %>
+  </div>
+<% end %>
+
+

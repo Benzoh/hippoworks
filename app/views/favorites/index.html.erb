@@ -1,0 +1,39 @@
+<% provide(:title, 'お気に入り一覧') %>
+
+<main class="container" style="padding-top: 57px;">
+  <h2>お気に入り一覧</h2>
+  <% @favorites.each do |fav| %>
+    <%
+      if fav.record_type == 'comment'
+        comment_model = Comment.find_by(id: fav.record_id)
+      end
+      parent_model = Object.const_get(fav.parent_type.classify).find_by(id: fav.parent_id)
+    %>
+    <div class="border-bottom py-3 d-flex">
+      <div class="mr-2"><img src="https://placehold.jp/50x50.png" alt="" width="40"></div>
+      <div>
+        <%# プロジェクトのコメント %>
+        <% if parent_model.present? && parent_model.class.name.demodulize == 'Project' && comment_model.present? %>
+          <i class="fas fa-check"></i> <%= link_to( parent_model.name.truncate(10), group_dashboard_path(id: parent_model.id, group_id: parent_model.group_id, anchor: "comment-#{comment_model.id}"), style: 'display: contents;' ) %>
+          <div><small><i class="fas fa-comment"></i> <%= comment_model.body.truncate(28) %></small></div>
+        <%# プロジェクト自体 %>
+        <% elsif parent_model.present? && parent_model.class.name.demodulize == 'Project' && comment_model.blank? %>
+          <i class="fas fa-check"></i> <%= link_to( parent_model.name.truncate(10), group_dashboard_path(id: parent_model.id, group_id: parent_model.group_id), style: 'display: contents;' ) %>
+          <div><small><%= parent_model.description.truncate(30) %></small></div>
+        <%# カレンダーのコメント %>
+        <% elsif parent_model.present? && parent_model.class.name.demodulize == 'Calendar' && comment_model.present? %>
+          <i class="far fa-calendar-alt"></i> <%= link_to( parent_model.name.truncate(10), calendar_path(id: parent_model.id), anchor: "comment-#{comment_model.id}", style: 'display: contents;' ) %>
+          <div><small><i class="fas fa-comment"></i> <%= comment_model.body.truncate(28) %></small></div>
+        <%# カレンダー自体 %>
+        <% elsif parent_model.present? && parent_model.class.name.demodulize == 'Calendar' && comment_model.blank?  %>
+          <i class="far fa-calendar-alt"></i> <%= link_to( parent_model.name.truncate(10), calendar_path(id: parent_model.id), style: 'display: contents;' ) %>
+          <div><small><%= parent_model.description.truncate(30) %></small></div>
+        <%# 他 %>
+        <% else %>
+          <% raise %>
+          <%= link_to( parent_model.body.truncate(10), send(parent_model.parent_type + '_path', anchor: "comment-#{parent_model.id}", id: parent_model.parent_id), style: 'display: contents;' ) %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</main>

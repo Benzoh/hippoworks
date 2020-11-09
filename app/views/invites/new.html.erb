@@ -1,0 +1,12 @@
+<% provide(:title, 'メンバーを招待する') %>
+
+<main class="container" style="padding-top: 57px">
+  <h2>メンバーを招待する</h2>
+  <div class="mt-5">
+    <p>グループに招待する知人のメールアドレスを入力してください。<br>
+    改行して複数入力が可能です。</p>
+    <%= render 'form', invite: @invite %>
+  </div>
+  <%= link_to 'Back', group_path(id: params[:group_id]), class: "btn btn-secondary mt-3" %>
+</main>
+

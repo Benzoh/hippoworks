@@ -1,0 +1,21 @@
+<%
+html = <<~EOS
+  <div class="list-group-item">
+    <div class="py-2 d-flex w-100 justify-content-between">
+      <div>
+        <img src="https://placehold.jp/30x30.png" width="30">
+        #{@memo.id}: ユーザー名 #{@memo.created_at}
+      </div>
+      <small><a href="/memos/#{@memo.id}/edit" class="float-right">編集</a></small>
+    </div>
+    <div class="py-2">#{@memo.body}</div>
+    <div class="pt-2 border-top"><a href="">♥ <small>いいね！</small></a></div>
+  </div>
+EOS
+
+logger.debug 'DEBUG >>>'
+logger.debug html.html_safe
+logger.debug '<<< DEBUG'
+%>
+
+$('#js_memo').prepend('<%= j(html.html_safe) %>');

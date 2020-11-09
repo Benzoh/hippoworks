@@ -1,0 +1,86 @@
+<div class="list-group">
+  <% updates.each do |group_id, items| %>
+    <% group = Group.find_by(id: group_id) %>
+    <h5 class="mt-3"><%= group.name %></h5>
+    <% items.each do |id, records| %>
+      <% if records.first[:thread_type].present? %>
+        <% model = Object.const_get(records.first.thread_type.classify).find_by(id: id) %>
+      <% else %>
+        <% model = Object.const_get(records.first.parent_type.classify).find_by(id: id) %>
+      <% end %>
+      <div class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-100 justify-content-between">
+          <div class="open-icon btn btn-sm border" data-toggle="collapse" href="#collapse_<%= records.first.parent_type + id %>" role="button" aria-expanded="false" aria-controls="collapse_<%= records.first.parent_type + id %>">
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="ml-3 mr-auto">
+            <h5 class="mb-0" style="line-height:1.5;">
+              <% if records.first[:thread_type] == 'project' || records.first[:parent_type] == 'project' %>
+                <span class="mr-2"><i class="fas fa-check"></i></span>
+                <a href="<%= url_for(group_dashboard_path(group_id: group.id, id: id)) %>"> <%= model.name %> </a>
+              <% elsif records.first[:thread_type] == 'calendar' || records.first[:parent_type] == 'calendar' %>
+                <span class="mr-2"><i class="far fa-calendar-alt"></i></span>
+                <a href="<%= url_for calendar_path(model) %>"> <%= model.name %> </a>
+              <% end %>
+            </h5>
+          </div>
+          <div>
+            <img src="<%= "/user_images/#{User.find_by(id: records.first.user_id).image_name}" %>" width="30">
+            <%= User.find_by(id: records.first.user_id).name %>
+          </div>
+          <div class="ml-3">
+            <small class="ml-2"><%= records.first.updated_at.strftime('%Y年%m月%d日 %H:%M') %></small>
+          </div>
+          <% notification = Notification.find_by(parent_id: records.first.parent_id) %>
+          <%= link_to  "既読", notification_path(id: notification.id, parent_type: records.first[:thread_type], parent_id: id, mark_as_read: 'true'), { remote: true, method: :delete, id: "mark_as_read_#{notification.id}", class:"ml-3 btn btn-sm btn-primary" } %>
+        </div>
+        <div class="collapse mt-3" id="collapse_<%= records.first.parent_type + id %>">
+          <% if records.first[:thread_type] == 'project' %>
+            <div class="pb-2">
+              <small>ステータス: <%= Status.find_by(id: model.status_id).name %> 担当者: <%= model.project_accounts.count %> 名 期日: <%= model.delivery_date.strftime("%Y/%m/%d (#{@wd[model.delivery_date.wday]})") %> 優先度: <%= model.priority %></small>
+            </div>
+          <% elsif records.first[:thread_type] == 'calendar' %>
+            <div class="pb-2">
+              <small>
+                <%#= TODO: リファクタリング %>
+                日時: 
+                <% if model.mode == 'normal' %>
+                  <%= model.start_year %>年<%= model.start_month %>月<%= model.start_day %>日 <%= format('%02d', model.start_hour) %>:<%= format('%02d', model.start_minute) %> 〜
+                  <%= model.end_year %>年<%= model.end_month %>月<%= model.end_day %>日 <%= format('%02d', model.end_hour) %>:<%= format('%02d', model.end_minute) %>
+                <% elsif model.mode == 'period' %>
+                  <%= model.start_year %>年<%= model.start_month %>月<%= model.start_day %>日 〜
+                  <%= model.end_year %>年<%= model.end_month %>月<%= model.end_day %>日
+                <% elsif model.mode == 'repeat' %>
+                  <%= format('%02d', model.start_hour) %>:<%= format('%02d', model.start_minute) %> 〜
+                  <%= format('%02d', model.end_hour) %>:<%= format('%02d', model.end_minute) %>
+                  <%= model.start_year %>年<%= model.start_month %>月<%= model.start_day %>日  〜
+                  <%= model.end_year %>年<%= model.end_month %>月<%= model.end_day %>日
+                  <% if model.period_unlimited %>
+                  （終日）
+                  <% end %>
+                <% end %>
+                作成者: <%= User.find_by(account_id: model.account_id).name %>
+              </small>
+            </div>
+          <% end %>
+          <% records.each do |comment| %>
+            <% if comment[:thread_type].present? %>
+              <div class="mb-4">
+                <div class="pt-3 pb-2">
+                  <%= simple_format Object.const_get(comment.parent_type.classify).find_by(id: comment.parent_id).description %>
+                </div>
+                <div class="pt-2 border-top"><a href="">♥ <small>いいね！</small></a></div>
+              </div>
+            <% else %>
+              <div class="card card-body mb-2">
+                <div class="pt-1"><small>投稿者：<%= User.find_by(id: comment.user_id).name %> / 投稿時間：<%= comment.updated_at.strftime('%Y年%m月%d日 %H:%M') %></small></div>
+                <div class="pt-3 pb-2"><%= simple_format comment.body %></div>
+                <div class="pt-2 border-top"><a href="">♥ <small>いいね！</small></a></div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>

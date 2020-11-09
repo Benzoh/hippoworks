@@ -1,0 +1,10 @@
+<% provide(:title, 'New Project') %>
+
+<main class="container" style="padding-top: 57px;">
+  <div class="m_signin text-center">
+    <h1 class="h3 mb-3 font-weight-normal">New Project | HippoWorks</h1>
+    <%= render 'form', project: @project %>
+  </div>
+</main>
+
+<%= link_to 'Back', group_projects_path %>

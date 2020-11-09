@@ -1,0 +1,16 @@
+<div id="<%= "like-#{thread_type}-#{thread_id}" %>">
+  <div>
+    <% if Like.find_by(user_id: @current_user.id, thread_id: thread_id, thread_type: thread_type) %>
+      <a href="<%= url_for("/likes/#{thread_type}/#{thread_id}/destroy") %>" data-method="post" data-remote="true">♥ <small>いいね！済み</small></a>
+    <% else %>
+      <a href="<%= url_for("/likes/#{thread_type}/#{thread_id}/create") %>" data-method="post" data-remote="true">♥ <small>いいね！</small></a>
+    <% end %>
+    <% likes = Like.where(thread_type: thread_type, thread_id: thread_id) %>
+    <% if likes.count > 0 %>
+      <a href="javascript:alert('未実装です');"><small class="ml-2"><%= "#{likes.count} 件" %></small></a>
+      <% likes.each do |like| %>
+        <img src="<%= "/user_images/#{User.find_by(id: like.user_id).image_name}" %>" width="26" class="ml-2">
+      <% end %>
+    <% end %>
+  </div>
+</div>

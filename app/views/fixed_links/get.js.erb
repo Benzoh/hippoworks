@@ -1,0 +1,11 @@
+$('.js_fixed-link').remove();
+
+var elm = $('.js_fixed-link-<%= params[:comment_id] %>')
+
+<% if params[:record_type] == 'project' %>
+  elm.prepend('<%= j(render(:partial => 'shared/fixed-link', locals: { record_type: params[:record_type], project_id: @project.id, group_id: @project.group_id, comment_id: params[:comment_id] })) %>')
+<% elsif params[:record_type] == 'calendar' %>
+  elm.prepend('<%= j(render(:partial => 'shared/fixed-link', locals: { record_type: params[:record_type], calendar_id: @calendar.id, comment_id: params[:comment_id] })) %>')
+<% end %>
+
+$("[name=focus_url]").select();

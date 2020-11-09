@@ -1,0 +1,96 @@
+<% provide(:title, 'Dashboard') %>
+
+<main class="container-fluid" style="padding-top: 16px;">
+  <% flash.each do |key, value| %>
+    <% key = 'success' if key == 'notice' %>
+    <%= content_tag(:div, value, class: "text-center alert alert-#{key}") %>
+  <% end %>
+  
+  <div class="row">
+    <div class="col-2">
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">カテゴリー
+          <a class="float-right text-white" href=""><i class="far fa-edit"></i></a>
+        </div>
+        <div class="list-group list-group-flush">
+          <a href="" class="text-dark list-group-item list-group-item-action">Cras justo odio</a>
+          <a href="" class="text-dark list-group-item list-group-item-action">Dapibus ac facilisis in</a>
+          <a href="" class="text-dark list-group-item list-group-item-action">Morbi leo risus</a>
+          <a href="" class="text-dark list-group-item list-group-item-action">Porta ac consectetur ac</a>
+          <a href="" class="text-dark list-group-item list-group-item-action">Vestibulum at eros</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-8">
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">プロジェクト詳細
+          <a class="float-right text-white" href="<%= url_for(edit_group_project_path) %>"><i class="far fa-edit"></i> 編集</a>
+        </div>
+        <div class="card-body <%= 'unread' if @nids.include?(@project.id) %>">
+          <div class="jumbotron py-3 mb-0">
+            <div class="d-flex">
+              <div>
+                <%= render :partial => 'shared/favorite', locals: { record_type: 'project', record_id: @project.id } %>
+              </div>
+              <h3 class="display-6 ml-2"><%= @project.name %></h3>
+            </div>
+            <div class="d-flex">
+              <div class="mr-3"><strong>Pman: <%= @project.number %></strong></div>
+              <div class="mr-3"><span class="badge badge-danger">標準作業が○○個完了していません</span></div>
+              <div class="mr-3">未完数：<span class="badge badge-light">10</span></div>
+              <div class="mr-3">納期：<%= raw get_delivery_date %></div>
+            </div>
+          </div>
+          <table class="table table-bordered table-sm mt-3">
+            <tr>
+              <th style="width:120px;">ステータス</th>
+              <td><%= Status.find_by(id: @project.status_id).name %></td>
+            </tr>
+            <tr>
+              <th>優先度</th>
+              <td><%= @project.priority %></td>
+            </tr>
+            <tr>
+              <th>担当者</th>
+              <td><%= @entry_users.join(' / ') %></td>
+            </tr>
+            <tr>
+              <th>期日</th>
+              <% #TODO: リファクタリング %>
+              <% wd = ["日", "月", "火", "水", "木", "金", "土"] %>
+              <td><%= @project.delivery_date.strftime('%Y年%m月%d日') %><%= '（'+wd[@project.delivery_date.wday]+'）' %></td>
+            </tr>
+            <tr>
+              <th>詳細</th>
+              <td><%= simple_format @project.description %></td>
+            </tr>
+            <tr>
+              <th>添付ファイル</th>
+              <td>
+                <% if @project.uploads.attached? %>
+                  <% @project.uploads.each do |file| %>
+                    <% if file.previewable? %>
+                      <%= link_to(image_tag(file.preview(resize: "200x200>")), url_for(file)) %>
+                    <% elsif file.variable? %>
+                      <%= link_to(image_tag(file.variant(resize: "200x200")), url_for(file)) %>
+                    <% else %>
+                      <%= link_to file.filename, rails_blob_path(file, disposition: "attachment") %>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </td>
+            </tr>
+          </table>
+          <%= render :partial => 'shared/like', locals: { thread_type: 'project', thread_id: @project.id } %>
+        </div>
+      </div>
+      <%= get_comment_form(@project, @comments, @nids) %>
+    </div>
+    
+    <div class="col-2">
+      <%#= render :partial => 'dashboard_modules/timers' %>
+      <%= render :partial => 'dashboard_modules/tasks' %>
+      <%= render :partial => 'dashboard_modules/standard_operations' %>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,35 @@
+<% provide(:title, 'New Calendar') %>
+
+<main class="container" style="padding-top: 57px">
+  <h2>予定を作成</h2>
+  <div class="mt-5">
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-normal-tab" data-toggle="tab" href="#nav-normal" role="tab" aria-controls="nav-normal" aria-selected="true">通常予定</a>
+        <a class="nav-item nav-link" id="nav-period-tab" data-toggle="tab" href="#nav-period" role="tab" aria-controls="nav-period" aria-selected="false">期間予定</a>
+        <a class="nav-item nav-link" id="nav-repeat-tab" data-toggle="tab" href="#nav-repeat" role="tab" aria-controls="nav-repeat" aria-selected="false">繰り返し予定</a>
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="nav-normal" role="tabpanel" aria-labelledby="nav-normal-tab">
+        <div class="py-3">
+          <%= render 'form_normal', calendar: @calendar %>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="nav-period" role="tabpanel" aria-labelledby="nav-period-tab">
+        <div class="py-3">
+          <%= render 'form_period', calendar: @calendar %>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="nav-repeat" role="tabpanel" aria-labelledby="nav-repeat-tab">
+        <div class="py-3">
+          <%= render 'form_repeat', calendar: @calendar %>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+
+
+

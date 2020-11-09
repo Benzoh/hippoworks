@@ -1,0 +1,16 @@
+<%
+html = <<~EOS
+<div class="fileupload">
+  <h1 class="h3 mb-3 font-weight-normal">元に戻す</h1>
+  <div class="fileupload__close">
+    <a class="js_fileupload-screen-close" href="javascript:void(0);">✗</a>
+  </div>
+  <p>ファイルを次のバージョンに戻します。よろしいですか？</p>
+  #{ render 'restore-form', cabinet: @cabinet }
+</div>
+
+<div class="fileupload-screen"></div>
+EOS
+%>
+
+$('#share-file-uploader').prepend('<%= j(html.html_safe) %>');

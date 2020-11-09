@@ -1,0 +1,209 @@
+<div class="d-flex pb-2">
+  <div class="mr-auto"><strong><%= @time.strftime("%Y/%m/%d (#{@wd[@time.wday]})") %></strong></div>
+  <div class="px-2"><a href="<%= url_for weekly_calendar_path(starting_point: @time.ago(7.days).strftime("%Y-%m-%d")) %>">先週</a></div>
+  <div class="px-2"><a href="<%= url_for weekly_calendar_path(starting_point: @time.yesterday.strftime("%Y-%m-%d")) %>">前日</a></div>
+  <div class="px-2"><a href="<%= url_for weekly_calendar_path(starting_point: Time.zone.now.strftime("%Y-%m-%d")) %>">今日</a></div>
+  <div class="px-2"><a href="<%= url_for weekly_calendar_path(starting_point: @time.tomorrow.strftime("%Y-%m-%d")) %>">翌日</a></div>
+  <div class="px-2"><a href="<%= url_for weekly_calendar_path(starting_point: @time.since(7.days).strftime("%Y-%m-%d")) %>">翌週</a></div>
+  <div class="px-2 mr-2"><a href="javascript:alert('未実装');"><i class="far fa-calendar-alt"></i></a></div>
+  <div class="px-2">
+    <div class="dropdown">
+      <button class="btn btn-sm btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        表示設定[未実装]
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <div class="p-2"><input type="checkbox" name="hoge" class=""> hoge</div>
+        <div class="p-2"><input type="checkbox" name="fuga" class=""> fuga</div>
+        <div class="p-2"><input type="checkbox" name="piyo" class=""> piyo</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<table class="calendar mt-2 w-100">
+  <tr>
+    <td width="14.28%" class="border p-2 align-top">
+      <a href=""><%= @time.strftime("%Y/%m/%d (#{@wd[@time.wday]})") %></a>
+      <a class="float-right" href="<%= url_for(new_calendar_path(start_date: @time.year.to_s+'-'+@time.month.to_s+'-'+@time.day.to_s)) %>"><i class="fas fa-plus"></i></a>
+      <div class="calendar__item mt-2">
+        <div>14:00-16:00</div>
+        <a href="">
+          <div>[グループ名][イベント]</div>
+          <div>スケジュールネーム</div>
+        </a>
+      </div>
+      <%= @test %>
+      <% calendars = Calendar.get_schedule_with_duration(@current_account.id, Time.new(@time.year, @time.month, @time.day).to_i, @joined_groups) %>
+      <% calendars.each do |calendar| %>
+        <div class="calendar__item mt-2">
+          <div><%= get_duration_date(calendar, @time) %></div>
+          <a href="<%= url_for(calendar_path(calendar)) %>">
+            <div>
+              <% if calendar.account_id != @current_account.id %>
+                <i class="fas fa-share-alt text-info"></i>
+              <% end %>
+              <%= calendar.name %>
+            </div>
+          </a>
+        </div>
+      <% end %>
+    </td>
+    
+    <td width="14.28%" class="border p-2 align-top">
+      <a href=""><%= @time.tomorrow.strftime("%Y/%m/%d (#{@wd[@time.tomorrow.wday]})") %></a>
+      <a class="float-right" href="<%= url_for(new_calendar_path(start_date: @time.tomorrow.year.to_s+'-'+@time.tomorrow.month.to_s+'-'+@time.tomorrow.day.to_s)) %>"><i class="fas fa-plus"></i></a>
+      <div class="calendar__item mt-2">
+        <div>14:00-16:00</div>
+        <a href="">
+          <div>[グループ名][イベント]</div>
+          <div>スケジュールネーム</div>
+        </a>
+      </div>
+      <% calendars = Calendar.get_schedule_with_duration(@current_account.id, Time.new(@time.tomorrow.year, @time.tomorrow.month, @time.tomorrow.day).to_i, @joined_groups) %>
+      <% calendars.each do |calendar| %>
+        <div class="calendar__item mt-2">
+          <div><%= get_duration_date(calendar, @time.tomorrow) %></div>
+          <a href="<%= url_for(calendar_path(calendar)) %>">
+            <div>
+              <% if calendar.account_id != @current_account.id %>
+                <i class="fas fa-share-alt text-info"></i>
+              <% end %>
+              <%= calendar.name %>
+            </div>
+          </a>
+        </div>
+      <% end %>
+    </td>
+    
+    <td width="14.28%" class="border p-2 align-top">
+      <a href=""><%= @time.since(2.days).strftime("%Y/%m/%d (#{@wd[@time.since(2.days).wday]})") %></a>
+      <a class="float-right" href="<%= url_for(new_calendar_path(start_date: @time.since(2.days).year.to_s+'-'+@time.since(2.days).month.to_s+'-'+@time.since(2.days).day.to_s)) %>"><i class="fas fa-plus"></i></a>
+      <div class="calendar__item mt-2">
+        <div>14:00-16:00</div>
+        <a href="">
+          <div>[グループ名][イベント]</div>
+          <div>スケジュールネーム</div>
+        </a>
+      </div>
+      <% calendars = Calendar.get_schedule_with_duration(@current_account.id, Time.new(@time.since(2.days).year, @time.since(2.days).month, @time.since(2.days).day).to_i, @joined_groups) %>
+      <% calendars.each do |calendar| %>
+        <div class="calendar__item mt-2">
+          <div><%= get_duration_date(calendar, @time.since(2.days)) %></div>
+          <a href="<%= url_for(calendar_path(calendar)) %>">
+            <div>
+              <% if calendar.account_id != @current_account.id %>
+                <i class="fas fa-share-alt text-info"></i>
+              <% end %>
+              <%= calendar.name %>
+            </div>
+          </a>
+        </div>
+      <% end %>
+    </td>
+
+    <td width="14.28%" class="border p-2 align-top">
+      <a href=""><%= @time.since(3.days).strftime("%Y/%m/%d (#{@wd[@time.since(3.days).wday]})") %></a>
+      <a class="float-right" href="<%= url_for(new_calendar_path(start_date: @time.since(3.days).year.to_s+'-'+@time.since(3.days).month.to_s+'-'+@time.since(3.days).day.to_s)) %>"><i class="fas fa-plus"></i></a>
+      <div class="calendar__item mt-2">
+        <div>14:00-16:00</div>
+        <a href="">
+          <div>[グループ名][イベント]</div>
+          <div>スケジュールネーム</div>
+        </a>
+      </div>
+      <% calendars = Calendar.get_schedule_with_duration(@current_account.id, Time.new(@time.since(3.days).year, @time.since(3.days).month, @time.since(3.days).day).to_i, @joined_groups) %>
+      <% calendars.each do |calendar| %>
+        <div class="calendar__item mt-2">
+          <%= get_duration_date(calendar, @time.since(3.days)) %>
+          <a href="<%= url_for(calendar_path(calendar)) %>">
+            <div>
+              <% if calendar.account_id != @current_account.id %>
+                <i class="fas fa-share-alt text-info"></i>
+              <% end %>
+              <%= calendar.name %>
+            </div>
+          </a>
+        </div>
+      <% end %>
+    </td>
+    
+    <td width="14.28%" class="border p-2 align-top">
+      <a href=""><%= @time.since(4.days).strftime("%Y/%m/%d (#{@wd[@time.since(4.days).wday]})") %></a>
+      <a class="float-right" href="<%= url_for(new_calendar_path(start_date: @time.since(4.days).year.to_s+'-'+@time.since(4.days).month.to_s+'-'+@time.since(4.days).day.to_s)) %>"><i class="fas fa-plus"></i></a>
+      <div class="calendar__item mt-2">
+        <div>14:00-16:00</div>
+        <a href="">
+          <div>[グループ名][イベント]</div>
+          <div>スケジュールネーム</div>
+        </a>
+      </div>
+      <% calendars = Calendar.get_schedule_with_duration(@current_account.id, Time.new(@time.since(4.days).year, @time.since(4.days).month, @time.since(4.days).day).to_i, @joined_groups) %>
+      <% calendars.each do |calendar| %>
+        <div class="calendar__item mt-2">
+          <%= get_duration_date(calendar, @time.since(4.days)) %>
+          <a href="<%= url_for(calendar_path(calendar)) %>">
+            <div>
+              <% if calendar.account_id != @current_account.id %>
+                <i class="fas fa-share-alt text-info"></i>
+              <% end %>
+              <%= calendar.name %>
+            </div>
+          </a>
+        </div>
+      <% end %>
+    </td>
+    
+    <td width="14.28%" class="border p-2 align-top">
+      <a href=""><%= @time.since(5.days).strftime("%Y/%m/%d (#{@wd[@time.since(5.days).wday]})") %></a>
+      <a class="float-right" href="<%= url_for(new_calendar_path(start_date: @time.since(5.days).year.to_s+'-'+@time.since(5.days).month.to_s+'-'+@time.since(5.days).day.to_s)) %>"><i class="fas fa-plus"></i></a>
+      <div class="calendar__item mt-2">
+        <div>14:00-16:00</div>
+        <a href="">
+          <div>[グループ名][イベント]</div>
+          <div>スケジュールネーム</div>
+        </a>
+      </div>
+      <% calendars = Calendar.get_schedule_with_duration(@current_account.id, Time.new(@time.since(5.days).year, @time.since(5.days).month, @time.since(5.days).day).to_i, @joined_groups) %>
+      <% calendars.each do |calendar| %>
+        <div class="calendar__item mt-2">
+          <%= get_duration_date(calendar, @time.since(5.days)) %>
+          <a href="<%= url_for(calendar_path(calendar)) %>">
+            <div>
+              <% if calendar.account_id != @current_account.id %>
+                <i class="fas fa-share-alt text-info"></i>
+              <% end %>
+              <%= calendar.name %>
+            </div>
+          </a>
+        </div>
+      <% end %>
+    </td>
+    
+    <td width="14.28%" class="border p-2 align-top">
+      <a href=""><%= @time.since(6.days).strftime("%Y/%m/%d (#{@wd[@time.since(6.days).wday]})") %></a>
+      <a class="float-right" href="<%= url_for(new_calendar_path(start_date: @time.since(6.days).year.to_s+'-'+@time.since(6.days).month.to_s+'-'+@time.since(6.days).day.to_s)) %>"><i class="fas fa-plus"></i></a>
+      <div class="calendar__item mt-2">
+        <div>14:00-16:00</div>
+        <a href="">
+          <div>[グループ名][イベント]</div>
+          <div>スケジュールネーム</div>
+        </a>
+      </div>
+      <% calendars = Calendar.get_schedule_with_duration(@current_account.id, Time.new(@time.since(6.days).year, @time.since(6.days).month, @time.since(6.days).day).to_i, @joined_groups) %>
+      <% calendars.each do |calendar| %>
+        <div class="calendar__item mt-2">
+          <%= get_duration_date(calendar, @time.since(6.days)) %>
+          <a href="<%= url_for(calendar_path(calendar)) %>">
+            <div>
+              <% if calendar.account_id != @current_account.id %>
+                <i class="fas fa-share-alt text-info"></i>
+              <% end %>
+              <%= calendar.name %>
+            </div>
+          </a>
+        </div>
+      <% end %>
+    </td>
+    
+  </tr>
+</table>

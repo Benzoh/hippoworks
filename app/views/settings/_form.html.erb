@@ -1,0 +1,42 @@
+<%= form_with(model: setting, local: true) do |form| %>
+  <% if setting.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(setting.errors.count, "error") %> prohibited this setting from being saved:</h2>
+
+      <ul>
+      <% setting.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :language %>
+    <%= form.text_field :language, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :post_per %>
+    <%= form.number_field :post_per, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :week_start %>
+    <%= form.text_field :week_start, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :push_mail %>
+    <%= form.check_box :push_mail, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :push_interval %>
+    <%= form.number_field :push_interval, class: "form-control" %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit '更新する', class: "btn btn-primary" %>
+  </div>
+<% end %>

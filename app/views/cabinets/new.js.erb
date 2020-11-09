@@ -1,0 +1,15 @@
+<%
+html = <<~EOS
+<div class="fileupload">
+  <h1 class="h3 mb-3 font-weight-normal">ファイルを追加する</h1>
+  <div class="fileupload__close">
+    <a class="js_fileupload-screen-close" href="javascript:void(0);">✗</a>
+  </div>
+  #{ render 'form', cabinet: Cabinet.new }
+</div>
+
+<div class="fileupload-screen"></div>
+EOS
+%>
+
+$('#share-file-uploader').prepend('<%= j(html.html_safe) %>');

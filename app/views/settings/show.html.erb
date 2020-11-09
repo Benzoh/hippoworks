@@ -1,0 +1,42 @@
+<% provide(:title, '個人設定') %>
+
+<main class="container" style="padding-top: 57px;">
+
+  <% if notice %>
+    <div class="alert alert-success" role="alert">
+      <%= notice %>
+    </div>
+  <% end %>
+
+  <h1 class="mb-3">個人設定</h1>
+
+  <% if @current_account.id == @setting.account_id %>
+    <%= link_to '個人設定を編集する', edit_setting_path(@setting), class: "btn btn-primary" %>
+  <% end %>
+
+  <table class="table mt-4">
+    <tbody>
+      <tr>
+        <th width="200" scope="row">言語</th>
+        <td><%= @setting.language %></td>
+      </tr>
+      <tr>
+        <th scope="row">1ページの表示数</th>
+        <td><%= @setting.post_per %></td>
+      </tr>
+      <tr>
+        <th scope="row">週の始まり</th>
+        <td><%= @setting.week_start %></td>
+      </tr>
+      <tr>
+        <th scope="row">メールでのプッシュ通知</th>
+        <td><%= @setting.push_mail %></td>
+      </tr>
+      <tr>
+        <th scope="row">通知する間隔</th>
+        <td><%= @setting.push_interval %></td>
+      </tr>
+    </tbody>
+  </table>
+
+</main>

@@ -1,0 +1,26 @@
+<% provide(:title, 'ファイルの上書き') %>
+
+<main class="container" style="padding-top: 57px">
+  <h2>ファイルの上書き</h2>
+  <table class="table mt-3">
+    <tr>
+      <th style="width:150px;">ファイル名</th>
+      <td><%= @cabinet.share_file.files[0].filename %> ( <%= (@cabinet.share_file.files[0].byte_size / 1.0.kilobyte).round %> KB )</td>
+    </tr>
+    <tr>
+      <th>タイトル</th>
+      <td><%= @cabinet.title %></td>
+    </tr>
+    <tr>
+      <th>フォルダ</th>
+      <td>#TODO: 未実装</td>
+    </tr>
+  </table>
+  <div class="p-3 border">
+    <%= render 'edit-form', cabinet: @cabinet %>
+  </div>
+  <div class="p-3">
+    <%= link_to '詳細を見る', group_cabinet_path(id: @cabinet.id, group_id: @cabinet.group_id) %> |
+    <%= link_to '一覧へ戻る', group_cabinets_path %>
+  </div>
+</main>

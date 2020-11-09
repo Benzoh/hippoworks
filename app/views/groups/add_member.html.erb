@@ -1,0 +1,35 @@
+<% provide(:title, 'メンバーを招待する') %>
+
+<main class="container" style="padding-top: 57px">
+  <h2>メンバーを招待する</h2>
+  <div class="mt-5">
+
+    <p>グループに招待する知人のメールアドレスを入力してください。</p>
+
+    <%= form_for @group, :url => {:action => 'invite_member'} do |f| %>
+      <% if @group.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@group.errors.count, "error") %> prohibited this group from being saved:</h2>
+
+          <ul>
+          <% @group.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <%= f.label 'メールアドレス' %>
+        <%= f.text_field :mail, { class: 'form-control', placeholder: "benzoh.wada@gmail.com" } %>
+      </div>
+
+      <%= f.hidden_field :from, { value: @current_account.id } %>
+
+      <div class="actions">
+        <%= f.submit '内容確認へ', { class: "btn btn-info" } %>
+      </div>
+    <% end %>
+
+  </div>
+</main>

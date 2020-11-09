@@ -1,0 +1,33 @@
+// Place all the styles related to the Projects controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+// common
+// main {
+//   padding-top: 57px;
+// }
+
+// modules
+.m_project {
+  &__item {
+    width: 32.4%;
+    &:not(:nth-child(3n+1)) {
+      margin-left: 1.4%;
+    }
+  }
+}
+
+.js_count {
+  .count_stop {
+    display: none;
+  }
+}
+
+.js_count.is_count {
+  .count_start {
+    display: none;
+  }
+  .count_stop {
+    display: inline;
+  }
+}

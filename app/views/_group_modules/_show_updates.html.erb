@@ -1,0 +1,53 @@
+<div class="list-group">
+  <% if project_updates.blank? %>
+    <div class="list-group-item flex-column"><small>新着情報はありません。</small></div>
+  <% end %>
+  <% project_updates.each do |parent_id, updates| %>
+    <%#= raise %>
+    <div class="list-group-item list-group-item-action flex-column align-items-start">
+      <div class="d-flex w-100 justify-content-between">
+        <div class="open-icon btn btn-sm border" data-toggle="collapse" href="#collapse_<%= parent_id %>" role="button" aria-expanded="false" aria-controls="collapse_<%= parent_id %>">
+          <!-- TODO: アイコン入れる｜詳細を展開 -->
+          ↓
+        </div>
+        <div class="ml-3 mr-auto">
+          <h5 class="mb-0" style="line-height:1.5;">
+            <% project = Project.find_by(id: updates.first.parent_id) %>
+            <%# raise %>
+            <a href="<%= url_for(group_project_path(id: project.id, group_id: project.group_id)) %>"><%= project.name %></a>
+          </h5>
+        </div>
+        <div>
+          <% user = User.find_by(id: updates.first.user_id) %>
+          <img src="<%= "/user_images/#{user.image_name}" %>" width="30"> <%= user.name %>
+        </div>
+        <div class="ml-3">
+          <small class="ml-2"><%= updates.first.updated_at.strftime('%Y年%m月%d日 %H:%M') %></small>
+        </div>
+        <% notification = Notification.find_by(parent_id: updates.first.parent_id) %>
+        <%= link_to "既読", notification_path(id: notification.id, parent_type: 'project', parent_id: parent_id, mark_as_read: 'true'), { remote: true, method: :delete, id: "mark_as_read_#{notification.id}", class:"ml-3 btn btn-sm btn-primary" } %>
+      </div>
+      <div class="collapse mt-3" id="collapse_<%= updates.first.parent_id %>">
+        <div class="pb-2">
+          <small>ステータス: <%= Status.find_by(id: project.status_id).name %> 担当者: <%= project.project_accounts.count %> 名 期日: <%= project.delivery_date.strftime("%Y/%m/%d (#{@wd[project.delivery_date.wday]})") %> 優先度: <%= project.priority %></small>
+        </div>
+        <% updates.each do |update| %>
+          <% if update[:thread_type].present? %>
+            <div class="mb-4">
+              <div class="pt-3 pb-2">
+                <%= simple_format Object.const_get(update.parent_type.classify).find_by(id: update.parent_id).description %>
+              </div>
+              <div class="pt-2 border-top"><a href="">♥ <small>いいね！</small></a></div>
+            </div>
+          <% else %>
+            <div class="card card-body mb-2">
+              <div class="pt-1"><small>投稿者：<%= User.find_by(id: update.user_id).name %> / 投稿時間：<%= update.updated_at.strftime('%Y年%m月%d日 %H:%M') %></small></div>
+              <div class="pt-3 pb-2"><%= simple_format update.body %></div>
+              <div class="pt-2 border-top"><a href="">♥ <small>いいね！</small></a></div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

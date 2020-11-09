@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Mail to:</strong>
+  <%= @invite.mail_to %>
+</p>
+
+<p>
+  <strong>Account:</strong>
+  <%= @invite.account_id %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @invite.state %>
+</p>
+
+<%= link_to 'Edit', edit_invite_path(@invite) %> |
+<%= link_to 'Back', invites_path %>

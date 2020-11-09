@@ -1,0 +1,17 @@
+<% provide(:title, '個人設定編集') %>
+
+<main class="container" style="padding-top: 57px;">
+
+  <h1 class="mb-3">個人設定編集</h1>
+
+  <%= render 'form', setting: @setting %>
+
+  <div class="mt-4">
+    <%= link_to 'キャンセル', setting_path, class: "btn btn-secondary" %>
+  </div>
+
+  <div class="account-delete">
+    <%= link_to '退会する', account_registration_path(), :method => :delete, :confirm => 'Are you sure?' %>
+  </div>
+
+</main>

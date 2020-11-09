@@ -1,0 +1,23 @@
+<% provide(:title, 'Edit Calendar') %>
+
+<main class="container" style="padding-top: 57px">
+  <h2>予定を編集</h2>
+  <div class="py-3">
+    <% if @calendar.mode == 'normal' %>
+      <p><strong>予定の種類：通常予定</strong></p>
+      <%= render 'form_normal', calendar: @calendar %>
+    <% elsif @calendar.mode == 'period' %>
+      <p><strong>予定の種類：期間予定</strong></p>
+      <%= render 'form_period', calendar: @calendar %>
+    <% elsif @calendar.mode == 'repeat' %>
+      <p><strong>予定の種類：繰り返し予定</strong></p>
+      <%= render 'form_repeat', calendar: @calendar %>
+    <% else %>
+      <% raise %>
+    <% end %>
+  </div>
+</main>
+
+
+
+

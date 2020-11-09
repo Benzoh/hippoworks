@@ -1,0 +1,69 @@
+<%= form_for(@project, :url => {:action => 'update'}) do |form| %>
+  <% if project.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(project.errors.count, "error") %> prohibited this project from being saved:</h2>
+
+      <ul>
+      <% project.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field mb-3">
+    <%= form.label :name, "プロジェクト名" %>
+    <%= form.text_field :name, {class: 'form-control', placeholder: "name"} %>
+  </div>
+
+  <div class="field mb-3">
+    <%= form.label :number, "Pman" %>
+    <%= form.text_field :number, {class: 'form-control', placeholder: "number"} %>
+  </div>
+
+  <div class="field mb-3">
+    <%= form.label :delivery_date, "納期" %>
+    <%= form.date_select :delivery_date, {}, {class: 'form-control mb-2'} %>
+  </div>
+
+  <div class="field mb-3">
+    <%= form.label :account_ids, "担当者" %>
+    <%= form.select :account_ids, @group_members.collect {|gm| [gm.user_name, gm.id]}, {include_hidden: false}, { class: 'form-control mb-2', multiple: true } %>
+  </div>
+
+  <div class="field mb-3">
+    <%= form.label :status_id, "ステータス" %>
+    <%= form.collection_select :status_id, Status.all, :id, :name, {}, { class: 'form-control mb-2' } %>
+  </div>
+
+  <div class="field mb-3">
+    <%= form.label :priority, "優先度" %>
+    <%= form.select :priority, [['S', 'S'], ['A', 'A'], ['B', 'B'], ['C', 'C'], ['D', 'D']], {}, { class: 'form-control mb-2' } %>
+  </div>
+
+  <div class="field mb-3">
+    <%= form.label :description, "詳細" %>
+    <%= form.text_area :description, class: 'form-control mb-2' %>
+  </div>
+
+  <div class="form-group mt-2">
+    <label for="file">添付ファイル</label>
+    <%#= TODO: 複数投稿にする %>
+    <%#= TODO: 5つまでにする %>
+    <%= form.file_field :uploads, { multiple: true, class: 'form-control-file' } %>
+  </div>
+
+  <%= form.hidden_field :group_id %>
+
+  <%= form.fields_for :timer, @project.timer || Timer.new do |t| %>
+    <%= t.hidden_field :secs %>
+    <%= t.hidden_field :project_id %>
+    <%= t.hidden_field :h %>
+    <%= t.hidden_field :m %>
+    <%= t.hidden_field :s %>
+  <% end %>
+
+  <div class="actions mt-5">
+    <%= form.submit '更新する', {class: "btn btn-lg btn-info btn-block"} %>
+  </div>
+<% end %>

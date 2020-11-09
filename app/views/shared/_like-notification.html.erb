@@ -1,0 +1,44 @@
+<div class="m_like-notifications js_side-window shadow px-3 close">
+  <div class="border-bottom py-2 mb-3"><strong>いいね！がついた投稿</strong></div>
+  <div class="list-group">
+  <% if @likes.present?
+    @likes.each do |key, value|
+      model = Object.const_get(key[0].classify).find_by(id: key[1])
+      if defined?(model.parent_type)
+        parent_model = Object.const_get(model.parent_type.classify).find_by(id: model.parent_id)
+      end
+      users = value.pluck(:user_id).map do |user_id|
+        User.find_by(id: user_id).name + "さん "
+      end
+    %>
+      <%# TODO: カレンダーの対応 %>
+      <%# TODO: リファクタリング → ヘルパーに処理をうつす？ → 抽象化しでなー %>
+      <%# TODO: 整合性確認 %>
+      <%# TODO: スレッドのアイコン差し込み（コメントなのか、プロジェクトなのか、） %>
+      <%# TODO: 再読込 %>
+      <div class="border-bottom py-3 d-flex">
+        <div class="mr-2"><img src="https://placehold.jp/50x50.png" alt="" width="40"></div>
+        <div>
+          <%# プロジェクトのコメント %>
+          <% if parent_model.present? && parent_model.class.name.demodulize == 'Project' %>
+            <%= "#{users.join}" %>が「<%= link_to( model.body.truncate(10), group_dashboard_path(id: parent_model.id, group_id: parent_model.group_id, anchor: "comment-#{model.id}"), style: 'display: contents;' ) %>」にいいね！をつけました。
+          <%# プロジェクト自体 %>
+          <% elsif model.present? && model.class.name.demodulize == 'Project' %>
+            <%= "#{users.join}" %>が「<%= link_to( model.name.truncate(10), group_dashboard_path(id: model.id, group_id: model.group_id), style: 'display: contents;' ) %>」にいいね！をつけました。
+          <%# カレンダーのコメント %>
+          <% elsif parent_model.present? && parent_model.class.name.demodulize == 'Calendar' %>
+            <%= "#{users.join}" %>が「<%= link_to( model.body.truncate(10), calendar_path(id: parent_model.id), style: 'display: contents;' ) %>」にいいね！をつけました。
+          <%# カレンダー自体 %>
+          <% elsif model.present? && model.class.name.demodulize == 'Calendar' %>
+            <%= "#{users.join}" %>が「<%= link_to( model.name.truncate(10), calendar_path(id: model.id), style: 'display: contents;' ) %>」にいいね！をつけました。
+          <%# 他 %>
+          <% else %>
+            <% raise %>
+            <%= "#{users.join}" %>が「<%= link_to( model.body.truncate(10), send(model.parent_type + '_path', anchor: "comment-#{model.id}", id: model.parent_id), style: 'display: contents;' ) %>」にいいね！をつけました。
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+  </div>
+</div>

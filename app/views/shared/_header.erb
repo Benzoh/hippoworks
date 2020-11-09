@@ -1,0 +1,138 @@
+<header class="c_header mb-3">
+  <nav class="c_navbar fixed-top navbar navbar-expand-lg navbar-dark bg-dark">
+    <% if ['projects#dashboard', 'memos#edit'].include? @loading_action %>
+      <a class="navbar-brand" href="<%= url_for controller: :groups, action: :index %>"><span class="border border-white px-3 py-2">D</span></a>
+    <% elsif %>
+      <a class="navbar-brand" href="/"><span class="border border-white px-3 py-2">D</span></a>
+    <% end %>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        
+      </ul>
+
+      <% if @current_account.blank? == false %>
+        <div class="m_utilities ml-3">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item text-white ml-4">
+              <a class="text-white" href="<%= url_for joined_projects_path %>">
+                <span class="mr-2"><i class="fas fa-list-ul fa-lg"></i></span>参加プロジェクト一覧
+              </a>
+            </li>
+            <li class="nav-item text-white ml-4">
+              <a class="text-white" href="<%= url_for calendars_path %>">
+                <span class="mr-2"><i class="far fa-calendar-alt fa-lg"></i></span>マイカレンダー
+              </a>
+            </li>
+            <li class="nav-item text-white ml-4">
+              <a class="text-white" href="#">
+                <span class="mr-2"><i class="far fa-comments fa-lg"></i></span>チャット[未実装]
+              </a>
+            </li>
+            <li class="nav-item text-white ml-4 dropdown">
+              <a class="text-white dropdown-toggle" href="#" id="dropdownMenuButton01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2"><i class="fas fa-users fa-lg"></i></span>グループ
+              </a>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton01">
+                <%= link_to 'グループを作る', new_group_path, { class: 'dropdown-item' } %>
+                <hr>
+                <% @joined_groups.each do |group| %>
+                  <div class="dropdown-item">
+                    <img src="https://placehold.jp/30x30.png" alt="">
+                    <%= link_to group.name, group_path(group) %>
+                  </div>
+                <% end %>
+              </div>
+            </li>
+            <li class="nav-item text-white ml-4 dropdown">
+              <a class="text-white dropdown-toggle" href="#" id="dropdownMenuButton02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2"><i class="fas fa-user-circle fa-lg"></i></span>アカウント
+              </a>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton02">
+                <div class="dropdown-item">
+                  <img src="https://placehold.jp/30x30.png" width="30"> <%= @current_account.name %>
+                </div>
+                <%= link_to '個人設定', setting_path(@current_account.user.id), class: "dropdown-item" %>
+                <hr>
+                <%= link_to 'コネクション', 'javascript:alert("未実装です")', class: "dropdown-item" %>
+                <%= link_to 'マイTODO', 'javascript:alert("未実装です")', class: "dropdown-item" %>
+                <%= link_to 'アンケート', 'javascript:alert("未実装です")', class: "dropdown-item" %>
+                <hr>
+                <%= link_to 'アカウント情報', edit_account_registration_path, class: "dropdown-item" %>
+                <%= link_to 'プロフィール', user_path(@current_account.user.id), class: "dropdown-item" %>
+                <%= link_to 'ログアウト'.html_safe, destroy_account_session_path, { method: :delete, class: 'dropdown-item' } %>
+              </div>
+            </li>
+            <li class="nav-item text-white ml-4 mr-2">
+              <a class="js_notifications-btn text-white" href="javascript:void(0);"><i class="far fa-bell fa-lg"></i></a>
+            </li>
+            <li class="nav-item text-white ml-3 mr-2">
+              <a class="js_like-notifications-btn text-white" href="javascript:void(0);">
+                <i class="fas fa-thumbs-up"></i>
+                <%# TODO: ajaxでの取得に変更 %>
+                <span class="badge badge-danger"><%= @likes.count if @likes.count > 0 %></span>
+              </a>
+            </li>
+            <li class="nav-item text-white ml-3 mr-2">
+              <a class="js_favorite-list-btn text-white" href="javascript:void(0);"><i class="fas fa-star"></i></a>
+            </li>
+          </ul>
+        </div>
+      <% end %>
+    </div>
+  </nav>
+</header>
+
+<% if [
+  'groups#show',
+  'projects#dashboard',
+  'projects#index',
+  'boards#index',
+  'boards#show',
+  'cabinets#index',
+  'cabinets#show',
+  'group_configurations#index',
+  ].include? @loading_action %>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" 
+    style="margin-top: 56px;">
+    <a class="navbar-brand" href="<%= url_for(group_path(id: @group.id)) %>">
+      <%= @group.name %>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="<%= url_for(group_path(id: @group.id)) %>">グループトップ <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">イベント[未実装]</a>
+        </li>
+        <li class="nav-item dropdown">
+          <%= link_to('プロジェクト', { controller: 'projects', action: 'index', group_id: @group.id },  { class: 'nav-link' }) %>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="<%= url_for({controller: 'boards', action: 'index', group_id: @group.id}) %>">掲示板</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="<%= url_for({controller: 'cabinets', action: 'index', group_id: @group.id}) %>">共有フォルダ</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">メンバー名簿[未実装]</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="<%= url_for({controller: 'group_configurations', action: 'index', group_id: @group.id}) %>">設定</a>
+        </li>
+      </ul>
+      <%# TODO: 検索対象の調整 %>
+      <%= search_form_for @q, html: {class: 'form-inline my-2 my-lg-0'} do |f| %>
+        <%= f.search_field :body_cont, {class: 'form-control mr-sm-2', placeholder: "グループ内を検索する" } %>
+        <%= f.submit "Search", {class: 'btn btn-outline-success my-2 my-sm-0'} %>
+      <% end  %>
+    </div>
+  </nav>
+<% end %>

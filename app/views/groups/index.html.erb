@@ -1,0 +1,123 @@
+<% provide(:title, 'ホーム') %>
+
+<main class="container-fluid" style="padding-top: 57px">
+  <% flash.each do |key, value| %>
+    <% key = 'success' if key == 'notice' %>
+    <%= content_tag(:div, value, class: "text-center alert alert-#{key}") %>
+  <% end %>
+  <div class="row">
+    <div class="col-2">
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">アカウント情報</div>
+        <div class="card-body d-flex">
+          <img src="<%= "/user_images/#{@current_account.user.image_name}" %>" width="50" height="50">
+          <div class="ml-2">
+            <%= link_to @current_account.user.name, user_path(@current_account.user.id) %>
+            <div>
+              <a href="#"><i class="fab fa-twitter-square"></i></a>
+              <a href="#"><i class="fab fa-facebook-square"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">グループ一覧
+          <small class="float-right" style="padding: 2px 0;">
+            <a class="text-white" href="javascript:alert('未実装です');">未読のみ</a>｜<a class="text-white" href="javascript:alert('未実装です');">すべて</a>
+          </small>
+        </div>
+        <div class="card-body">
+          <% if @joined_groups.blank? %>
+            参加しているグループがありません
+          <% else %>
+            <% @joined_groups.each do |group| %>
+              <div class="my-2">
+                <img src="https://placehold.jp/30x30.png" alt="">
+                <%= link_to group.name, group_path(group) %>
+              </div>
+            <% end %>
+          <% end %>
+          <hr>
+          <div class="py-1">
+            <%= link_to 'グループを作る', new_group_path %>
+          </div>
+          <div class="py-1">
+            <%= link_to '参加グループの設定', 'javascript:alert("未実装です")' %>
+          </div>
+          <%# <div>
+            <a href="#">参加グループ設定</a>
+          </div> %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-10">
+      <div class="alert alert-light border" role="alert">
+        <div class="text-dark"><strong>お知らせ</strong></div>
+        <hr>
+        <ul class="mb-0">
+          <% if @current_account.name.blank? %>
+            <li><%= link_to 'プロフィールを編集してください。', user_path(@current_account.user.id) %>
+            </li>
+          <% end %>
+          <li><a href="">色は匂へど散りぬるを、我が世たれぞ常ならむ。有為の奥山今日越えて、浅き夢見じ、酔ひもせず。</a></li>
+          <li><a href="">色は匂へど散りぬるを、我が世たれぞ常ならむ。有為の奥山今日越えて、浅き夢見じ、酔ひもせず。</a></li>
+        </ul>
+      </div>
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">週間予定</div>
+        <div class="card-body">
+          <%= render 'home_modules/weekly_calendar' %>
+        </div>
+      </div>
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">参加グループ</div>
+        <div class="card-body">
+          <div class="row justify-content-start">
+            <% @joined_groups.each do |group| %>
+              <div class="col-1 text-center">
+                <img src="https://placehold.jp/50x50.png" alt=""><br>
+                <%= link_to group.name, group_path(group) %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="card mb-3">
+        <div class="card-header text-white bg-dark">新着一覧</div>
+        <div class="card-body">
+          <%# TODO: 参加グループの更新履歴表示 %>
+          <% if @group_all_updates.blank? %>
+            <span>更新はありません。</span>
+          <% else %>
+            <%# TODO: グループごとのループ処理 %>
+            <%= render partial: "_group_modules/index_updates", locals: {updates: @group_all_updates} %>
+          <% end %>
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <div class="col-2">
+          <strong>HippoWorksについて</strong>
+          <ul>
+            <li><a href="#">hoge</a></li>
+            <li><a href="#">fuga</a></li>
+          </ul>
+        </div>
+        <div class="col-2">
+          <strong>もっと活用する</strong>
+          <ul>
+            <li><a href="#">hoge</a></li>
+            <li><a href="#">fuga</a></li>
+          </ul>
+        </div>
+        <div class="col-2">
+          <strong>アカウント</strong>
+          <ul>
+            <li><a href="#">個人設定</a></li>
+            <li><a href="#">ログアウト</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
