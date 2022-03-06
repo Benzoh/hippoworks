@@ -1,0 +1,44 @@
+version: '3'
+services:
+  app:
+    build: ./docker/api
+    # command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    command: sleep infinity
+    volumes:
+      - ./web/api:/usr/src/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+  mysql:
+    build: ./docker/mysql
+    volumes:
+      - db-data:/var/lib/mysql/data
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hippoworks_development
+  phpmyadmin:
+    image: arm64v8/phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - 8080:80
+    depends_on:
+      - mysql
+    volumes:
+      - /sessions
+  frontend:
+    build: ./docker/frontend
+    volumes:
+      - ./web/frontend:/usr/src/app
+    ports:
+      - 80:8080
+    command: yarn && node server.js
+volumes:
+  db-data:
