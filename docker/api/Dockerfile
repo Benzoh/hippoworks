@@ -1,20 +1,21 @@
 FROM ruby:3.0
 ENV LANG C.UTF-8
 
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs 
+RUN apt-get update -qq && apt-get install -y build-essential libpq-dev
 
-ENV APP_ROOT /usr/src/app
+ENV APP_ROOT /usr/src/hippoworks
 WORKDIR $APP_ROOT
 
-# Install nodejs
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
-RUN apt-get install -y nodejs
+COPY Gemfile $APP_ROOT
+COPY Gemfile.lock $APP_ROOT
 
-RUN apt-get update && apt-get install yarn -y
+RUN bundle install
 
-# ADD ./web/api/Gemfile $APP_ROOT
-# ADD ./web/api/Gemfile.lock $APP_ROOT
+# Add a script to be executed every time the container starts.
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
+EXPOSE 3000
 
-# RUN bundle install
-
-# ADD ./web/api $APP_ROOT
+# Configure the main process to run when running the image
+CMD ["rails", "server", "-b", "0.0.0.0"]

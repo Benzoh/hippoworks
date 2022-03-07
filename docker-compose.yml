@@ -2,10 +2,10 @@ version: '3'
 services:
   app:
     build: ./docker/api
-    # command: bundle exec rails s -p 3000 -b '0.0.0.0'
-    command: sleep infinity
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    # command: sleep infinity
     volumes:
-      - ./web/api:/usr/src/app
+      - ./web/api:/usr/src/hippoworks
     ports:
       - "3000:3000"
     depends_on:
@@ -36,9 +36,9 @@ services:
   frontend:
     build: ./docker/frontend
     volumes:
-      - ./web/frontend:/usr/src/app
+      - ./web/frontend:/usr/src/hippoworks
     ports:
       - 80:8080
-    command: yarn && node server.js
+    command: bash -c "yarn && node server.js"
 volumes:
   db-data:
