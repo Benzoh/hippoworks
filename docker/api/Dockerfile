@@ -1,10 +1,12 @@
-FROM ruby:3.0
+FROM ruby:2.7
 ENV LANG C.UTF-8
 
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev
 
 ENV APP_ROOT /usr/src/hippoworks
 WORKDIR $APP_ROOT
+
+RUN gem install bundler
 
 COPY Gemfile $APP_ROOT
 COPY Gemfile.lock $APP_ROOT
