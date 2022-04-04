@@ -67,3 +67,7 @@ yarn-debug.log*
 # Ignore uploaded files in development
 /storage/*
 !/storage/.keep
+
+# my setting
+/public/user_images/*
+!/public/user_images/.keep
