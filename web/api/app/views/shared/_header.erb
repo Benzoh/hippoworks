@@ -38,7 +38,7 @@
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton01">
                 <%= link_to 'グループを作る', new_group_path, { class: 'dropdown-item' } %>
                 <hr>
-                <% @joined_groups.each do |group| %>
+                <% @joined_groups && @joined_groups.each do |group| %>
                   <div class="dropdown-item">
                     <img src="https://placehold.jp/30x30.png" alt="">
                     <%= link_to group.name, group_path(group) %>
